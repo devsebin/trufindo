@@ -1,0 +1,69 @@
+import { IStatus } from "@/database/status/status-db-interface";
+import { DbTransaction } from "@/utils/interfaces/activity-log.interface";
+import { rethrowIfKnown } from "@/utils/responses/error.response";
+import mongoose, { HydratedDocument, Model } from "mongoose";
+import StatusModel from "@/database/status/status-db-model";
+import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
+import { updatedFields } from "@/utils/helpers/update-finder.helper";
+import { createDbTransaction } from "@/utils/helpers/db-transaction.helper";
+import { tableName } from "@/utils/definitions/constants/table-names";
+import { apiMethods } from "@/utils/definitions/constants/api-methods";
+import { operationTypes } from "@/utils/definitions/constants/operation-types";
+import { throwError } from "../../status.helper";
+
+class activateStatusHelperService {
+  private readonly statusRepository = Model<IStatus>;
+
+  constructor() {
+    this.statusRepository = StatusModel;
+  }
+  async execute(
+    status: HydratedDocument<IStatus>,
+    session: mongoose.ClientSession,
+    DbTransactions: DbTransaction[],
+    errorMap: Record<string, { message: string; status: number }>,
+    updated_by: mongoose.Types.ObjectId,
+  ): Promise<HydratedDocument<IStatus>> {
+    const snapshot = status;
+    try {
+      if (snapshot.is_active) {
+        throwError(
+          "already_activated",
+          ResponseBuilder.error(ErrorTypes.CONFLICT, {
+            message: "No changes found.",
+            data: { 0: snapshot },
+            filler: { 0: snapshot.label, 1: snapshot._id },
+          }),
+        );
+      }
+
+      const updatedDocument = await this.statusRepository.findOneAndUpdate(
+        { _id: status._id },
+        {
+          $set: {
+            updated_by: updated_by,
+            is_active: true,
+          },
+        },
+        { session, new: true },
+      );
+      const changes = updatedFields(updatedDocument, snapshot);
+
+      DbTransactions.push(
+        await createDbTransaction(
+          tableName.Status,
+          apiMethods.PATCH,
+          operationTypes.activate,
+          updatedDocument,
+          changes,
+        ),
+      );
+
+      return updatedDocument as HydratedDocument<IStatus>;
+    } catch (error) {
+      rethrowIfKnown(error, "Error while activating status", errorMap);
+    }
+  }
+}
+
+export default new activateStatusHelperService();
