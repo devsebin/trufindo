@@ -13,6 +13,7 @@ import deactivateStatusService from "./services/deactivate-status.service";
 import deleteStatusesService from "./services/delete-status.service";
 import showStatusService from "./services/show-status.service";
 import updateStatusesService from "./services/update-status.service";
+import listStatusService from "./services/list-status.service";
 class statusesController {
   public async Store(
     req: Request,
@@ -96,10 +97,7 @@ class statusesController {
       createActivityLogService.execute(req, res, start, end, response);
     }
   }
-  public async Index(
-    req: Request,
-    res: Response,
-  ): Promise<JsonResponse | void> {
+  public async Show(req: Request, res: Response): Promise<JsonResponse | void> {
     let response: any;
     const start = new Date().getTime();
     try {
@@ -123,7 +121,31 @@ class statusesController {
       createActivityLogService.execute(req, res, start, end, response);
     }
   }
-  public async Show(req: Request, res: Response) {}
+  public async Index(
+    req: Request,
+    res: Response,
+  ): Promise<JsonResponse | void> {
+    let response: any;
+    const start = new Date().getTime();
+    try {
+      response = await listStatusService.execute(req, false);
+      return res.status(response.result.code).json(response.result);
+    } catch (error: any) {
+      const message = (error as Error).message;
+      response = {
+        result: errorResponse(
+          errorMessages.SomethingWentWrong,
+          statusCodes.InternalServerError,
+          [message],
+        ),
+        DbTransactions: [],
+      };
+      res.status(statusCodes.InternalServerError).json(response.result);
+    } finally {
+      const end = new Date().getTime();
+      createActivityLogService.execute(req, res, start, end, response);
+    }
+  }
   public async Search(req: Request, res: Response) {}
   public async activate(
     req: Request,

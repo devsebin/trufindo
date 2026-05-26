@@ -18,8 +18,7 @@ router.post(
 router.get("/", statusController.Index);
 router.patch("/:id/enable", paramsValidator, statusController.activate);
 router.patch("/:id/disable", paramsValidator, statusController.deactivate);
-router.get("/:id", statusController.Index);
-// router.post("/", StatusController.Store);
+router.get("/:id", statusController.Show);
 router.put(
   "/:id",
   paramsValidator,

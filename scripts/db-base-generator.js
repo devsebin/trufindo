@@ -14,12 +14,13 @@ if(type === "db") {
 }
 
 if(type === "master") {
-  const basePath = path.join(process.env.INIT_CWD, name);
+  const basePath = path.join(process.cwd(), "src", "resources", "v1", "masters", name);
   generateMasterFiles(name, basePath);
 }
 
 if(type === "module") {
-  const basePath = path.join(process.env.INIT_CWD, name);
+    // const basePath = path.join(process.env.INIT_CWD, name);
+  const basePath = path.join(process.cwd(), "src", "resources", "v1", name);
   generateModuleFiles(name, basePath);
 }
 

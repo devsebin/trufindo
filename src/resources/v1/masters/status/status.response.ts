@@ -1,3 +1,14 @@
+const userResponse = (user: any) =>
+  user
+    ? {
+        id: user._id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        role: user.role,
+      }
+    : null;
+
 export const statusResponse = (status: any): any => ({
   id: status._id,
   title: status.title,
@@ -5,34 +16,12 @@ export const statusResponse = (status: any): any => ({
   label: status.label,
   is_active: status.is_active,
   is_deleted: status.is_deleted,
-  created_by: status.created_by
-    ? {
-        id: status.created_by._id,
-        first_name: status.created_by.first_name,
-        last_name: status.created_by.last_name,
-        email: status.created_by.email,
-        role: status.created_by.role,
-      }
-    : null,
 
-  updated_by: status.updated_by
-    ? {
-        id: status.created_by._id,
-        first_name: status.created_by.first_name,
-        last_name: status.created_by.last_name,
-        email: status.created_by.email,
-        role: status.created_by.role,
-      }
-    : null,
-  deleted_by: status.deleted_by
-    ? {
-        id: status.created_by._id,
-        first_name: status.created_by.first_name,
-        last_name: status.created_by.last_name,
-        email: status.created_by.email,
-        role: status.created_by.role,
-      }
-    : null,
+  created_by: userResponse(status.created_by),
+
+  updated_by: userResponse(status.updated_by),
+
+  deleted_by: userResponse(status.deleted_by),
 
   created_at: status.createdAt,
   updated_at: status.updatedAt,
