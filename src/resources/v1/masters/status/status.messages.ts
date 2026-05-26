@@ -33,6 +33,18 @@ export const statusesErrorsMessages = {
     message: "Status is already inactive with title: {0} and id: {1}",
     status: statusCodes.BadRequest,
   },
+  confirmation_required: {
+    message: "Confirmation required to delete status",
+    status: statusCodes.BadRequest,
+  },
+  already_deleted: {
+    message: "Status is already deleted with title: {0} and id: {1}",
+    status: statusCodes.BadRequest,
+  },
+  not_deleted: {
+    message: "Status is not deleted with title: {0} and id: {1}",
+    status: statusCodes.BadRequest,
+  },
 };
 
 export const statusesSuccessMessages = {

@@ -45,6 +45,7 @@ function generateMasterFiles(name, basePath) {
    "interfaces",
    "helpers",
    "helpers/validators",
+    "helpers/operations",
    "workflow",
  ];
  
@@ -62,6 +63,7 @@ function generateMasterFiles(name, basePath) {
    `services/list-${name}.service.ts`,
    `services/enable-${name}.service.ts`,
    `services/disable-${name}.service.ts`,
+   `services/import-${name}.service.ts`,
  ];
  
  fs.mkdirSync(basePath, { recursive: true });
@@ -86,6 +88,7 @@ function generateModuleFiles(name, basePath) {
     "interfaces",
     "helpers",
     "helpers/validators",
+    "helpers/operations",
     "workflow",
   ];
   

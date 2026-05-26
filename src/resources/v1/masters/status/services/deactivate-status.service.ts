@@ -9,6 +9,7 @@ import findStatusHelperService from "../helpers/validators/find-status.helper.se
 import { statusesErrorsMessages } from "../status.messages";
 import { statusPayload } from "../status.helper";
 import deactivateStatusHelperService from "../helpers/operations/deactivate.status.helper.service";
+import findStatusStateHelperService from "../helpers/validators/find-state.helper.service";
 
 class deactivateStatusService {
   public async execute(
@@ -25,6 +26,11 @@ class deactivateStatusService {
         { _id: id },
         statusesErrorsMessages,
         { lean: true, throwIfNotFound: true, returnDocument: true, session },
+      );
+
+      await findStatusStateHelperService.isAlreadyInactive(
+        status[0],
+        statusesErrorsMessages,
       );
 
       const updatedStatus = await deactivateStatusHelperService.execute(

@@ -1,7 +1,12 @@
 import routes from "express";
 import statusController from "./status.controller";
-import validationMiddleware from "@/middlewares/request-validation.middleware";
-import { statusInputValidator } from "./status.validator";
+import validationMiddleware, {
+  validationSource,
+} from "@/middlewares/request-validation.middleware";
+import {
+  deleteStatusInputValidator,
+  statusInputValidator,
+} from "./status.validator";
 import { paramsValidator } from "@/middlewares/request-url-object-id.validation.middleware";
 const router = routes.Router();
 router.post(
@@ -14,5 +19,10 @@ router.patch("/:id/disable", paramsValidator, statusController.deactivate);
 // router.get("/:id", StatusController.Show);
 // router.post("/", StatusController.Store);
 // router.put("/:id", StatusController.Update);
-// router.delete("/:id", StatusController.Delete);
+router.delete(
+  "/:id",
+  paramsValidator,
+  validationMiddleware(deleteStatusInputValidator, validationSource.query),
+  statusController.Delete,
+);
 export default router;

@@ -26,16 +26,6 @@ class deactivateStatusHelperService {
   ): Promise<HydratedDocument<IStatus>> {
     const snapshot = status;
     try {
-      if (!snapshot.is_active) {
-        throwError(
-          "already_inactive",
-          ResponseBuilder.error(ErrorTypes.CONFLICT, {
-            message: "No changes found.",
-            data: { 0: snapshot },
-            filler: { 0: snapshot.label, 1: snapshot._id },
-          }),
-        );
-      }
       const updatedDocument = await this.statusRepository.findOneAndUpdate(
         { _id: status._id },
         {

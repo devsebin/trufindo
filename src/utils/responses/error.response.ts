@@ -29,7 +29,7 @@ export interface ErrorResponse {
 export const errorResponse = (
   message: string,
   statusCode: number,
-  data: any[] = [],
+  data: any,
 ) => ({
   success: false,
   message,

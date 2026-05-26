@@ -10,7 +10,7 @@ import createStatusService from "./services/create-status.service";
 import activateStatusService from "./services/activate-status.service";
 import mongoose from "mongoose";
 import deactivateStatusService from "./services/deactivate-status.service";
-
+import deleteStatusesService from "./services/delete-status.service";
 class statusesController {
   public async Store(
     req: Request,
@@ -38,7 +38,35 @@ class statusesController {
     }
   }
   public async Update(req: Request, res: Response) {}
-  public async Delete(req: Request, res: Response) {}
+  public async Delete(
+    req: Request,
+    res: Response,
+  ): Promise<JsonResponse | void> {
+    let response: any;
+    const start = new Date().getTime();
+    try {
+      response = await deleteStatusesService.execute(
+        new mongoose.Types.ObjectId(req.params.id),
+        new mongoose.Types.ObjectId(),
+        req.query.force_action === "true" ? true : false,
+      );
+      return res.status(response.result.code).json(response.result);
+    } catch (error: any) {
+      const message = (error as Error).message;
+      response = {
+        result: errorResponse(
+          errorMessages.SomethingWentWrong,
+          statusCodes.InternalServerError,
+          [message],
+        ),
+        DbTransactions: [],
+      };
+      res.status(statusCodes.InternalServerError).json(response.result);
+    } finally {
+      const end = new Date().getTime();
+      createActivityLogService.execute(req, res, start, end, response);
+    }
+  }
   public async Index(req: Request, res: Response) {}
   public async Show(req: Request, res: Response) {}
   public async Search(req: Request, res: Response) {}
