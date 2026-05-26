@@ -1,6 +1,3 @@
-import { IStatus } from "@/database/status/status-db-interface";
-import { HydratedDocument } from "mongoose";
-
 export const statusResponse = (status: any): any => ({
   id: status._id,
   title: status.title,

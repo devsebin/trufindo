@@ -11,6 +11,8 @@ import activateStatusService from "./services/activate-status.service";
 import mongoose from "mongoose";
 import deactivateStatusService from "./services/deactivate-status.service";
 import deleteStatusesService from "./services/delete-status.service";
+import showStatusService from "./services/show-status.service";
+import updateStatusesService from "./services/update-status.service";
 class statusesController {
   public async Store(
     req: Request,
@@ -37,7 +39,34 @@ class statusesController {
       createActivityLogService.execute(req, res, start, end, response);
     }
   }
-  public async Update(req: Request, res: Response) {}
+  public async Update(
+    req: Request,
+    res: Response,
+  ): Promise<JsonResponse | void> {
+    let response: any;
+    const start = new Date().getTime();
+    try {
+      response = await updateStatusesService.execute(
+        new mongoose.Types.ObjectId(req.params.id),
+        req,
+      );
+      return res.status(response.result.code).json(response.result);
+    } catch (error: any) {
+      const message = (error as Error).message;
+      response = {
+        result: errorResponse(
+          errorMessages.SomethingWentWrong,
+          statusCodes.InternalServerError,
+          [message],
+        ),
+        DbTransactions: [],
+      };
+      res.status(statusCodes.InternalServerError).json(response.result);
+    } finally {
+      const end = new Date().getTime();
+      createActivityLogService.execute(req, res, start, end, response);
+    }
+  }
   public async Delete(
     req: Request,
     res: Response,
@@ -67,7 +96,33 @@ class statusesController {
       createActivityLogService.execute(req, res, start, end, response);
     }
   }
-  public async Index(req: Request, res: Response) {}
+  public async Index(
+    req: Request,
+    res: Response,
+  ): Promise<JsonResponse | void> {
+    let response: any;
+    const start = new Date().getTime();
+    try {
+      response = await showStatusService.execute(
+        new mongoose.Types.ObjectId(req.params.id),
+      );
+      return res.status(response.result.code).json(response.result);
+    } catch (error: any) {
+      const message = (error as Error).message;
+      response = {
+        result: errorResponse(
+          errorMessages.SomethingWentWrong,
+          statusCodes.InternalServerError,
+          [message],
+        ),
+        DbTransactions: [],
+      };
+      res.status(statusCodes.InternalServerError).json(response.result);
+    } finally {
+      const end = new Date().getTime();
+      createActivityLogService.execute(req, res, start, end, response);
+    }
+  }
   public async Show(req: Request, res: Response) {}
   public async Search(req: Request, res: Response) {}
   public async activate(

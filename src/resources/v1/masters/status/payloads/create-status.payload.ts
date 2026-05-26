@@ -14,3 +14,7 @@ export interface IInputUserPayload extends Partial<IStatus> {}
 export interface IInputStatusPayloadStrict extends Strict<
   Partial<IStatus> & Required<Pick<IStatus, "title" | "label" | "color">>
 > {}
+
+export interface IUpdateStatusPayloadStrict extends Strict<
+  Partial<IStatus> & Required<Pick<IStatus, "title" | "label" | "color">>
+> {}

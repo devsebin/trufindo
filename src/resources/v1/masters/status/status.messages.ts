@@ -45,6 +45,10 @@ export const statusesErrorsMessages = {
     message: "Status is not deleted with title: {0} and id: {1}",
     status: statusCodes.BadRequest,
   },
+  no_change_detected: {
+    message: "No change detected in status with title: {0} and id: {1}",
+    status: statusCodes.BadRequest,
+  },
 };
 
 export const statusesSuccessMessages = {
@@ -68,7 +72,7 @@ export const statusesSuccessMessages = {
     message: "Statuses listed successfully.",
     status: statusCodes.OK,
   },
-  status_shown: {
+  status_fetched: {
     message: "Status details fetched successfully.",
     status: statusCodes.OK,
   },

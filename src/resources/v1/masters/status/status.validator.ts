@@ -6,6 +6,13 @@ export const statusInputValidator = Joi.object<IInputStatusPayloadStrict>({
   color: Joi.string().trim().min(1).max(100).required(),
 });
 
+export const updateStatusInputValidator = Joi.object<IInputStatusPayloadStrict>(
+  {
+    title: Joi.string().trim().min(1).max(100).required(),
+    color: Joi.string().trim().min(1).max(100).required(),
+  },
+);
+
 export const deleteStatusInputValidator = Joi.object({
   is_force: Joi.boolean().optional(),
 });
