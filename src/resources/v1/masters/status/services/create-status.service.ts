@@ -13,6 +13,8 @@ import { getRequestBody } from "@/utils/helpers/request-body-fetcher.helper";
 import { statusesErrorsMessages } from "../status.messages";
 import { toStatusDTO } from "../dto/status.dto";
 import createStatusHelperService from "../helpers/operations/create-status.helper.service";
+import findStatusDefaultHelperService from "../helpers/validators/find-default.helper.service";
+import { statusResponse } from "../status.response";
 
 class createStatusService {
   public async execute(
@@ -40,9 +42,14 @@ class createStatusService {
         },
       );
 
+      const bodyWithDefault = await findStatusDefaultHelperService.execute(
+        body,
+        statusesErrorsMessages,
+        { setDefault: true, session },
+      );
       // create new status
       const newStatus = await createStatusHelperService.execute(
-        body,
+        bodyWithDefault,
         session,
         DbTransactions,
         statusesErrorsMessages,
@@ -53,7 +60,11 @@ class createStatusService {
 
       await session.commitTransaction();
 
-      return statusPayload("status_created", newStatus, DbTransactions);
+      return statusPayload(
+        "status_created",
+        statusResponse(newStatus),
+        DbTransactions,
+      );
     } catch (error) {
       await session.abortTransaction();
       const err = error as Error & { data?: any };

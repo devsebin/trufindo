@@ -49,6 +49,10 @@ export const statusesErrorsMessages = {
     message: "No change detected in status with title: {0} and id: {1}",
     status: statusCodes.BadRequest,
   },
+  status_is_default: {
+    message: "status is default with title: {0} and id: {1}",
+    status: statusCodes.BadRequest,
+  },
 };
 
 export const statusesSuccessMessages = {

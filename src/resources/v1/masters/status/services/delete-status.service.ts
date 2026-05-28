@@ -21,7 +21,6 @@ class deleteStatusesService {
     const dbTransactions: DbTransaction[] = [];
     try {
       session.startTransaction();
-
       const status = await findStatusHelperService.execute(
         { _id: id },
         statusesErrorsMessages,
@@ -29,6 +28,11 @@ class deleteStatusesService {
       );
 
       await findStatusStateHelperService.isAlreadyDeleted(
+        status[0],
+        statusesErrorsMessages,
+      );
+
+      await findStatusStateHelperService.isDefault(
         status[0],
         statusesErrorsMessages,
       );

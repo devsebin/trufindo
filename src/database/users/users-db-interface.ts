@@ -32,7 +32,7 @@ export interface IUser {
   password?: string;
   emailVerified?: boolean;
   emailVerifiedAt?: Date;
-  priority: IUserPriority;
+  priority_id: Types.ObjectId;
   phone?: string;
   phoneVerified: boolean;
   phoneVerifiedAt?: Date;

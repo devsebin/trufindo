@@ -14,5 +14,5 @@ export const updateStatusInputValidator = Joi.object<IInputStatusPayloadStrict>(
 );
 
 export const deleteStatusInputValidator = Joi.object({
-  is_force: Joi.boolean().optional(),
+  force_action: Joi.boolean().optional(),
 });

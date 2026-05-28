@@ -154,7 +154,6 @@ class createActivityLogService {
 
       return await this.activityLogModel.create(activityLog);
     } catch (error) {
-      console.log(error);
       return buildErrorResult((error as Error).message);
     }
   }

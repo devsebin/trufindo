@@ -32,6 +32,14 @@ const PrioritySchema = new Schema<IPriorities>(
   },
 );
 
+PrioritySchema.index(
+  { is_default: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { is_default: true },
+  },
+);
+
 // Add default status_id if not present
 PrioritySchema.plugin(defaultStatusPlugin);
 

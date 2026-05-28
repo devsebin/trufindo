@@ -16,12 +16,7 @@ export interface IInputUserPayloadStrict extends Strict<
     Required<
       Pick<
         IUser,
-        | "role"
-        | "priority"
-        | "phoneVerified"
-        | "is_active"
-        | "is_deleted"
-        | "status_id"
+        "role" | "phoneVerified" | "is_active" | "is_deleted" | "status_id"
       >
     >
 > {}

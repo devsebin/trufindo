@@ -1,22 +1,22 @@
-import { IStatus } from "@/database/status/status-db-interface";
-import { rethrowIfKnown } from "@/utils/responses/error.response";
+import { IPriorities } from "@/database/priority/priority-db-interface";
 import { HydratedDocument } from "mongoose";
+import { priorityErrorResponse } from "../../priority.response";
+import { throwError } from "../../priority.helper";
 import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
-import { throwError } from "../../status.helper";
-import { statusErrorResponse } from "../../status.response";
+import { rethrowIfKnown } from "@/utils/responses/error.response";
 
-class findStatusStateHelperService {
+class findPriorityStateHelperService {
   async isAlreadyActive(
-    status: HydratedDocument<IStatus>,
+    status: HydratedDocument<IPriorities>,
     errorMap: Record<string, { message: string; status: number }>,
   ): Promise<void> {
     try {
       if (status.is_active) {
-        const data = statusErrorResponse(status);
+        const data = priorityErrorResponse(status);
         throwError(
-          "already_activated",
+          "already_active",
           ResponseBuilder.error(ErrorTypes.CONFLICT, {
-            message: "status is already active with title: {0} and id: {1}",
+            message: "Priority is already active with title: {0} and id: {1}",
             data: { data },
             filler: { 0: status.label, 1: status._id },
           }),
@@ -28,17 +28,17 @@ class findStatusStateHelperService {
   }
 
   async isAlreadyInactive(
-    status: HydratedDocument<IStatus>,
+    status: HydratedDocument<IPriorities>,
     errorMap: Record<string, { message: string; status: number }>,
   ): Promise<void> {
     try {
       if (!status.is_active) {
-        const data = statusErrorResponse(status);
+        const data = priorityErrorResponse(status);
 
         throwError(
           "already_inactive",
           ResponseBuilder.error(ErrorTypes.CONFLICT, {
-            message: "status is already inactive with title: {0} and id: {1}",
+            message: "Priority is already inactive with title: {0} and id: {1}",
             data: { data },
             filler: { 0: status.label, 1: status._id },
           }),
@@ -50,12 +50,12 @@ class findStatusStateHelperService {
   }
 
   async isAlreadyDeleted(
-    status: HydratedDocument<IStatus>,
+    status: HydratedDocument<IPriorities>,
     errorMap: Record<string, { message: string; status: number }>,
   ): Promise<void> {
     try {
       if (status.is_deleted) {
-        const data = statusErrorResponse(status);
+        const data = priorityErrorResponse(status);
 
         throwError(
           "already_deleted",
@@ -72,12 +72,12 @@ class findStatusStateHelperService {
   }
 
   async isNotDeleted(
-    status: HydratedDocument<IStatus>,
+    status: HydratedDocument<IPriorities>,
     errorMap: Record<string, { message: string; status: number }>,
   ): Promise<void> {
     try {
       if (!status.is_deleted) {
-        const data = statusErrorResponse(status);
+        const data = priorityErrorResponse(status);
 
         throwError(
           "not_deleted",
@@ -93,18 +93,19 @@ class findStatusStateHelperService {
     }
   }
 
-  async isDefault(
-    status: HydratedDocument<IStatus>,
+  async IsDefault(
+    status: HydratedDocument<IPriorities>,
     errorMap: Record<string, { message: string; status: number }>,
   ): Promise<void> {
     try {
       if (status.is_default) {
-        const data = statusErrorResponse(status);
+        const data = priorityErrorResponse(status);
 
         throwError(
-          "status_is_default",
+          "default_priority",
           ResponseBuilder.error(ErrorTypes.CONFLICT, {
-            message: "status is default with title: {0} and id: {1}",
+            message:
+              "Default priority cannot be deleted / deactivated with title: {0} and id: {1}",
             data: { data },
             filler: { 0: status.label, 1: status._id },
           }),
@@ -116,4 +117,4 @@ class findStatusStateHelperService {
   }
 }
 
-export default new findStatusStateHelperService();
+export default new findPriorityStateHelperService();

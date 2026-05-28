@@ -1,5 +1,4 @@
-import { IStatus } from "@/database/status/status-db-interface";
-import StatusModel from "@/database/status/status-db-model";
+import { IPriorities } from "@/database/priority/priority-db-interface";
 import { apiMethods } from "@/utils/definitions/constants/api-methods";
 import { operationTypes } from "@/utils/definitions/constants/operation-types";
 import { tableName } from "@/utils/definitions/constants/table-names";
@@ -8,13 +7,13 @@ import { updatedFields } from "@/utils/helpers/update-finder.helper";
 import { DbTransaction } from "@/utils/interfaces/activity-log.interface";
 import { rethrowIfKnown } from "@/utils/responses/error.response";
 import mongoose, { HydratedDocument, Model } from "mongoose";
-import { throwError } from "../../status.helper";
+import { throwError } from "../../priority.helper";
 import { ActionTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
-import { statusErrorResponse } from "../../status.response";
+import { priorityErrorResponse } from "../../priority.response";
 
-class deleteStatusHelperService {
+class deletePriorityHelperService {
   async execute(
-    status: HydratedDocument<IStatus>,
+    priority: HydratedDocument<IPriorities>,
     errorMap: Record<string, { message: string; status: number }>,
     session: mongoose.ClientSession,
     DbTransactions: DbTransaction[],
@@ -22,40 +21,39 @@ class deleteStatusHelperService {
     is_force: boolean = false,
   ): Promise<void> {
     try {
-      if (!is_force && status.is_active) {
+      if (!is_force && priority.is_active) {
         throwError(
           "confirmation_required",
           ResponseBuilder.actionRequired(
             ActionTypes.CONFIRM_DELETE,
-            "Are you sure you want to delete this status?",
+            "Are you sure you want to delete this Priority?",
             true,
-            statusErrorResponse(status),
+            priorityErrorResponse(priority),
           ),
         );
       }
 
-      const snapshot = status;
-      status.is_deleted = true;
-      status.deleted_by = owner;
-      status.updated_by = owner;
-      status.is_active = false;
-      await status.save({ session });
+      const snapshot = priority;
+      priority.is_deleted = true;
+      priority.deleted_by = owner;
+      priority.updated_by = owner;
+      priority.is_active = false;
+      await priority.save({ session });
 
-      const changes = updatedFields(status, snapshot);
-
+      const changes = updatedFields(priority, snapshot);
       DbTransactions.push(
         await createDbTransaction(
-          tableName.Status,
+          tableName.Priority,
           apiMethods.DELETE,
           operationTypes.Delete,
-          status.toObject(),
+          priority.toObject(),
           changes,
         ),
       );
     } catch (error) {
-      rethrowIfKnown(error, "Error while deleting status", errorMap);
+      rethrowIfKnown(error, "Error while deleting priority", errorMap);
     }
   }
 }
 
-export default new deleteStatusHelperService();
+export default new deletePriorityHelperService();

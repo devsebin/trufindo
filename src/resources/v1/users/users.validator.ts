@@ -31,12 +31,6 @@ export const userValidation = Joi.object<IInputUserPayloadStrict>({
     "string.min": "Phone number must be at least 10 characters long",
     "string.max": "Phone number cannot exceed 15 characters",
   }),
-  priority: Joi.string().trim().optional().custom(objectIdValidator).messages({
-    "string.base": "Priority must be a string",
-    "string.empty": "Priority cannot be empty",
-    "any.custom": "Priority must be a valid MongoDB ObjectId",
-  }),
-
   icon: Joi.string().trim().optional().custom(objectIdValidator).messages({
     "string.base": "Icon must be a string",
     "string.empty": "Icon cannot be empty",

@@ -1,7 +1,7 @@
-import { IStatus } from "@/database/status/status-db-interface";
-import StatusModel from "@/database/status/status-db-model";
+import { IPriorities } from "@/database/priority/priority-db-interface";
+import PriorityModel from "@/database/priority/priority-db-model";
 import mongoose, { HydratedDocument, Model } from "mongoose";
-import { IStatusDTO } from "../../dto/status.dto";
+import { IPriorityDTO } from "../../dto/priority.dto";
 import { DbTransaction } from "@/utils/interfaces/activity-log.interface";
 import { createDbTransaction } from "@/utils/helpers/db-transaction.helper";
 import { tableName } from "@/utils/definitions/constants/table-names";
@@ -9,25 +9,25 @@ import { apiMethods } from "@/utils/definitions/constants/api-methods";
 import { operationTypes } from "@/utils/definitions/constants/operation-types";
 import { rethrowIfKnown } from "@/utils/responses/error.response";
 
-class createStatusHelperService {
-  private readonly statusRepository: Model<IStatus>;
+class createPriorityHelperService {
+  private readonly priorityRepository: Model<IPriorities>;
 
   constructor() {
-    this.statusRepository = StatusModel;
+    this.priorityRepository = PriorityModel;
   }
   public async execute(
-    payload: Partial<IStatusDTO>,
+    payload: Partial<IPriorityDTO>,
     session: mongoose.ClientSession,
     DbTransactions: DbTransaction[],
     errorMap: Record<string, { message: string; status: number }>,
-  ): Promise<HydratedDocument<IStatus>> {
+  ): Promise<HydratedDocument<IPriorities>> {
     try {
-      const doc = new this.statusRepository(payload);
+      const doc = new this.priorityRepository(payload);
       await doc.save({ session });
 
       DbTransactions.push(
         await createDbTransaction(
-          tableName.Status,
+          tableName.Priority,
           apiMethods.POST,
           operationTypes.Create,
           doc.toObject(),
@@ -40,4 +40,4 @@ class createStatusHelperService {
   }
 }
 
-export default new createStatusHelperService();
+export default new createPriorityHelperService();

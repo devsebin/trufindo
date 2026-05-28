@@ -13,10 +13,7 @@ export async function generateUserData(): Promise<IInputUserPayload[]> {
       emailVerified: true,
       emailVerifiedAt: new Date(),
       password: await bcrypt.hash("Se12b3123@#$%", 10),
-      priority: {
-        title: "high",
-        priority: 10,
-      },
+      priority_id: new mongoose.Types.ObjectId(),
       phone: "0211234567",
       phoneVerified: true,
       phoneVerifiedAt: new Date(),

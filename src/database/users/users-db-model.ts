@@ -6,6 +6,7 @@ import {
   IUserBasicFormDto,
   IUserDeclaimerInput,
 } from "./users-db-interface";
+import { defaultPriorityPlugin } from "@/utils/plugins/defaultPriority.plugin";
 
 // Define the IconUrl schema
 const IconUrlSchema: Schema = new Schema(
@@ -141,7 +142,12 @@ const UserSchema: Schema = new Schema<IUser>(
     },
     phoneVerified: { type: Boolean, default: false },
     phoneVerifiedAt: { type: Date, default: null },
-    priority: { type: PrioritySchema },
+    priority_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: tableName.Priority,
+      default: null,
+      required: false,
+    },
     icon: {
       type: mongoose.Schema.Types.ObjectId,
       ref: tableName.Documents,
@@ -204,6 +210,8 @@ UserSchema.methods.toJSON = function () {
   delete userObject.__v;
   return userObject;
 };
+
+UserSchema.plugin(defaultPriorityPlugin);
 
 UserSchema.pre(/^find/, function (next) {
   this.where({ is_active: true, is_deleted: false });

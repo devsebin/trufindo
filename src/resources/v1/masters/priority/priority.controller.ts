@@ -6,14 +6,15 @@ import {
   errorMessages,
   statusCodes,
 } from "@/utils/definitions/constants/common";
-import createStatusService from "./services/create-status.service";
-import activateStatusService from "./services/activate-status.service";
+import createPriorityService from "./services/create-priority.service";
+import deletePriorityService from "./services/delete-priority.service";
+import deactivatePriorityService from "./services/disable-priority.service";
+import activatePriorityService from "./services/enable-priority.service";
 import mongoose from "mongoose";
-import deactivateStatusService from "./services/deactivate-status.service";
-import deleteStatusesService from "./services/delete-status.service";
-import showStatusService from "./services/show-status.service";
-import updateStatusesService from "./services/update-status.service";
-import listStatusService from "./services/list-status.service";
+import showPriorityService from "./services/show-priority.service";
+import updatePriorityService from "./services/update-priority.service";
+import setDefaultPriorityService from "./services/set-default-priority.service";
+
 class priorityController {
   public async Store(
     req: Request,
@@ -22,7 +23,7 @@ class priorityController {
     let response: any;
     const start = new Date().getTime();
     try {
-      response = await createStatusService.execute(req);
+      response = await createPriorityService.execute(req);
       return res.status(response.result.code).json(response.result);
     } catch (error: any) {
       const message = (error as Error).message;
@@ -47,7 +48,7 @@ class priorityController {
     let response: any;
     const start = new Date().getTime();
     try {
-      response = await updateStatusesService.execute(
+      response = await updatePriorityService.execute(
         new mongoose.Types.ObjectId(req.params.id),
         req,
       );
@@ -76,8 +77,8 @@ class priorityController {
     const start = new Date().getTime();
     try {
       const is_force = req.query.force_action ?? false;
-
-      response = await deleteStatusesService.execute(
+      console.log(typeof is_force);
+      response = await deletePriorityService.execute(
         new mongoose.Types.ObjectId(req.params.id),
         new mongoose.Types.ObjectId(),
         is_force as boolean,
@@ -103,7 +104,7 @@ class priorityController {
     let response: any;
     const start = new Date().getTime();
     try {
-      response = await showStatusService.execute(
+      response = await showPriorityService.execute(
         new mongoose.Types.ObjectId(req.params.id),
       );
       return res.status(response.result.code).json(response.result);
@@ -123,32 +124,32 @@ class priorityController {
       createActivityLogService.execute(req, res, start, end, response);
     }
   }
-  public async Index(
-    req: Request,
-    res: Response,
-  ): Promise<JsonResponse | void> {
-    let response: any;
-    const start = new Date().getTime();
-    try {
-      response = await listStatusService.execute(req, false);
-      return res.status(response.result.code).json(response.result);
-    } catch (error: any) {
-      const message = (error as Error).message;
-      response = {
-        result: errorResponse(
-          errorMessages.SomethingWentWrong,
-          statusCodes.InternalServerError,
-          [message],
-        ),
-        DbTransactions: [],
-      };
-      res.status(statusCodes.InternalServerError).json(response.result);
-    } finally {
-      const end = new Date().getTime();
-      createActivityLogService.execute(req, res, start, end, response);
-    }
-  }
-  public async Search(req: Request, res: Response) {}
+  //   public async Index(
+  //     req: Request,
+  //     res: Response,
+  //   ): Promise<JsonResponse | void> {
+  //     let response: any;
+  //     const start = new Date().getTime();
+  //     try {
+  //       response = await listStatusService.execute(req, false);
+  //       return res.status(response.result.code).json(response.result);
+  //     } catch (error: any) {
+  //       const message = (error as Error).message;
+  //       response = {
+  //         result: errorResponse(
+  //           errorMessages.SomethingWentWrong,
+  //           statusCodes.InternalServerError,
+  //           [message],
+  //         ),
+  //         DbTransactions: [],
+  //       };
+  //       res.status(statusCodes.InternalServerError).json(response.result);
+  //     } finally {
+  //       const end = new Date().getTime();
+  //       createActivityLogService.execute(req, res, start, end, response);
+  //     }
+  //   }
+  //   public async Search(req: Request, res: Response) {}
   public async activate(
     req: Request,
     res: Response,
@@ -156,7 +157,7 @@ class priorityController {
     let response: any;
     const start = new Date().getTime();
     try {
-      response = await activateStatusService.execute(
+      response = await activatePriorityService.execute(
         new mongoose.Types.ObjectId(req.params.id),
         new mongoose.Types.ObjectId(),
       );
@@ -184,7 +185,36 @@ class priorityController {
     let response: any;
     const start = new Date().getTime();
     try {
-      response = await deactivateStatusService.execute(
+      response = await deactivatePriorityService.execute(
+        new mongoose.Types.ObjectId(req.params.id),
+        new mongoose.Types.ObjectId(),
+      );
+      return res.status(response.result.code).json(response.result);
+    } catch (error: any) {
+      const message = (error as Error).message;
+      response = {
+        result: errorResponse(
+          errorMessages.SomethingWentWrong,
+          statusCodes.InternalServerError,
+          [message],
+        ),
+        DbTransactions: [],
+      };
+      res.status(statusCodes.InternalServerError).json(response.result);
+    } finally {
+      const end = new Date().getTime();
+      createActivityLogService.execute(req, res, start, end, response);
+    }
+  }
+
+  public async setDefault(
+    req: Request,
+    res: Response,
+  ): Promise<JsonResponse | void> {
+    let response: any;
+    const start = new Date().getTime();
+    try {
+      response = await setDefaultPriorityService.execute(
         new mongoose.Types.ObjectId(req.params.id),
         new mongoose.Types.ObjectId(),
       );
