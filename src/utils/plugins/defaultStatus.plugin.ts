@@ -1,5 +1,5 @@
 // plugins/defaultStatus.plugin.ts
-import StatusModel from "@/database/status/status-db-model";
+import StatusModel from "../../database/status/status-db-model";
 import { Schema } from "mongoose";
 import { ErrorTypes, ResponseBuilder } from "../helpers/response-builder";
 

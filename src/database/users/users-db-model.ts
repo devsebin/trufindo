@@ -6,7 +6,7 @@ import {
   IUserBasicFormDto,
   IUserDeclaimerInput,
 } from "./users-db-interface";
-import { defaultPriorityPlugin } from "@/utils/plugins/defaultPriority.plugin";
+import { defaultPriorityPlugin } from "../../utils/plugins/defaultPriority.plugin";
 
 // Define the IconUrl schema
 const IconUrlSchema: Schema = new Schema(

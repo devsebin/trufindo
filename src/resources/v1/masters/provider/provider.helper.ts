@@ -1,19 +1,18 @@
-// utils/tokenErrorHelper.ts
 import { DbTransaction } from "@/utils/interfaces/activity-log.interface";
-import { CustomError } from "@/utils/responses/error.response";
-import { successResponse } from "@/utils/responses/success.response";
-import { ApiResponse } from "@/utils/responses/api.response";
 import {
-  countryErrorsMessages,
-  countrySuccessMessages,
-} from "./country.messages";
+  providerErrorsMessages,
+  providerSuccessMessages,
+} from "./provider.messages";
+import { successResponse } from "@/utils/responses/success.response";
+import { CustomError } from "@/utils/responses/error.response";
+import { ApiResponse } from "@/utils/responses/api.response";
 
-export function countryPayload(
-  type: keyof typeof countrySuccessMessages,
+export function providerPayload(
+  type: keyof typeof providerSuccessMessages,
   data: any = [],
   DbTransaction: DbTransaction[] = [],
 ) {
-  const { message, status } = countrySuccessMessages[type];
+  const { message, status } = providerSuccessMessages[type];
   return {
     result: successResponse(message, status, data),
     DbTransaction: DbTransaction,
@@ -21,7 +20,7 @@ export function countryPayload(
 }
 
 export function throwError<T = any>(
-  message: keyof typeof countryErrorsMessages,
+  message: keyof typeof providerErrorsMessages,
   data: ApiResponse<T>,
 ): never {
   const error = new Error() as CustomError;
@@ -48,15 +47,7 @@ export const populateFields = [
     path: "status_id",
     select: "title",
   },
-  {
-    path: "provider",
-    select: "name is_active supportedCountries",
-  },
-  {
-    path: "region_ids",
-  },
 ];
-
 export function buildPopulateQuery(reqQuery: any) {
   return {
     ...reqQuery,

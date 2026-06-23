@@ -1,5 +1,5 @@
 // plugins/defaultStatus.plugin.ts
-import PriorityModel from "@/database/priority/priority-db-model";
+import PriorityModel from "../../database/priority/priority-db-model";
 import { Schema } from "mongoose";
 
 let cachedDefaultStatusId: any = null;
@@ -8,7 +8,6 @@ async function getDefaultStatusId() {
   if (cachedDefaultStatusId) {
     return cachedDefaultStatusId;
   }
-
   const defaultStatus = await PriorityModel.findOne({
     is_default: true,
     is_deleted: false,

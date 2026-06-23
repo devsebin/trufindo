@@ -1,8 +1,8 @@
 import mongoose, { Schema, model } from "mongoose";
 import { IPriorities } from "./priority-db-interface";
-import { CommonServiceFieldsModel } from "@/utils/definitions/constants/db-constants";
-import { tableName } from "@/utils/definitions/constants/table-names";
-import { defaultStatusPlugin } from "@/utils/plugins/defaultStatus.plugin";
+import { CommonServiceFieldsModel } from "../../utils/definitions/constants/db-constants";
+import { tableName } from "../../utils/definitions/constants/table-names";
+import { defaultStatusPlugin } from "../../utils/plugins/defaultStatus.plugin";
 
 const PrioritySchema = new Schema<IPriorities>(
   {

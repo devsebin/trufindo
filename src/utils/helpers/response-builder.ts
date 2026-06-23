@@ -3,7 +3,7 @@ import {
   DependencyWarningAction,
   ErrorDetails,
 } from "../responses/api.response";
-import { generateToken } from "@/utils/helpers/otp-helper";
+import { generateToken } from "../../utils/helpers/otp-helper";
 
 export enum ActionTypes {
   UNLINK_DEPENDENCIES = "UNLINK_DEPENDENCIES",
