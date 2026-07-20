@@ -19,6 +19,19 @@ export interface GeoData {
   [key: string]: any;
 }
 
+function isLocalIp(ip: string): boolean {
+  return (
+    ip === "::1" ||
+    ip === "127.0.0.1" ||
+    ip === "::ffff:127.0.0.1" ||
+    ip.startsWith("192.168.") ||
+    ip.startsWith("10.") ||
+    ip.startsWith("172.16.") ||
+    /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(ip) ||
+    ip.startsWith("fe80:")
+  );
+}
+
 export const geoMiddleware = async (
   req: Request,
   res: Response,
@@ -37,14 +50,30 @@ export const geoMiddleware = async (
       }
     }
 
-    const ip = req.ip != "::1" ? req.ip : "121.98.12.250";
+    const ip = req.ip || "127.0.0.1";
 
     // Fetch new geo data if cookie missing or IP changed
     if (!geoData || geoData.query !== ip) {
-      const { data } = await axios.get<GeoData>(`http://ip-api.com/json/${ip}`);
+      if (isLocalIp(ip)) {
+        // Use a mock/default geolocation for local/loopback IP addresses to avoid unnecessary external API calls
+        geoData = {
+          status: "success",
+          country: "Localhost",
+          countryCode: "LH",
+          region: "LH",
+          regionName: "Localhost Region",
+          city: "Localhost City",
+          zip: "00000",
+          lat: 0,
+          lon: 0,
+          timezone: "UTC",
+          isp: "Local Loopback",
+          org: "Local Loopback",
+          as: "Local Loopback",
+          query: ip,
+        };
 
-      if (data.status !== "fail") {
-        const encrypted = cookieService.encrypt(JSON.stringify(data));
+        const encrypted = cookieService.encrypt(JSON.stringify(geoData));
 
         res.cookie(COOKIE_NAME, encrypted, {
           maxAge: COOKIE_MAX_AGE,
@@ -52,17 +81,34 @@ export const geoMiddleware = async (
           secure: COOKIE_SECURE,
           sameSite: "lax",
         });
-
-        geoData = data;
       } else {
-        console.warn(`IP-API lookup failed for IP: ${ip}`);
-        geoData = null;
+        const { data } = await axios.get<GeoData>(`http://ip-api.com/json/${ip}`);
+
+        if (data && data.status !== "fail") {
+          const encrypted = cookieService.encrypt(JSON.stringify(data));
+
+          res.cookie(COOKIE_NAME, encrypted, {
+            maxAge: COOKIE_MAX_AGE,
+            httpOnly: COOKIE_HTTP_ONLY,
+            secure: COOKIE_SECURE,
+            sameSite: "lax",
+          });
+
+          geoData = data;
+        } else {
+          console.warn(`IP-API lookup failed for IP: ${ip}`);
+          geoData = null;
+        }
       }
     }
 
     (req as any).geoData = geoData;
-  } catch (err) {
-    console.error("geoMiddleware error:", err);
+  } catch (err: any) {
+    if (axios.isAxiosError(err)) {
+      console.warn(`geoMiddleware lookup failed: ${err.message} (code: ${err.code})`);
+    } else {
+      console.error("geoMiddleware error:", err);
+    }
     (req as any).geoData = null;
   }
 

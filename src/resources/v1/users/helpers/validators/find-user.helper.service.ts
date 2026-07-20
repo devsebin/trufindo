@@ -3,11 +3,11 @@ import UserModel from "@/database/users/users-db-model";
 import StrictFilterQuery from "@/utils/helpers/query-filter";
 import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 import { IBaseFindOptions } from "@/utils/interfaces/base-find-query.interface";
-import { HydratedDocument, Model, Types } from "mongoose";
+import { Document, HydratedDocument, Model, Types } from "mongoose";
 import { throwError } from "../../users.helper";
 import { rethrowIfKnown } from "@/utils/responses/error.response";
 
-export type UserQuery = StrictFilterQuery<IUser & { _id: Types.ObjectId }>;
+export type UserQuery = StrictFilterQuery<Omit<IUser, keyof Document> & { _id: Types.ObjectId }>;
 class findUserHelperService {
   private readonly userRepository: Model<IUser>;
 

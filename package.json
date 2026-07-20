@@ -10,8 +10,8 @@
     "dev": "tsc-watch --onSuccess \"node ./dist/index.js\"",
     "build": "tsc && npm run copy-templates",
     "postinstall": "npm run build",
-    "seed": "ts-node src/utils/seeder/data-seeder.ts",
-    "seed:api": "ts-node src/utils/seeder/api-seeder.ts",
+    "seed": "ts-node -r tsconfig-paths/register src/utils/seeder/data-seeder.ts",
+    "seed:api": "ts-node -r tsconfig-paths/register src/utils/seeder/api-seeder.ts",
     "copy-templates": "copyfiles -u 1 src/utils/templates/**/* dist/",
     "test": "jest",
     "test:watch": "jest --watch"

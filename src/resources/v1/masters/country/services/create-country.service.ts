@@ -11,7 +11,9 @@ import mongoose from "mongoose";
 import { DbTransaction } from "@/utils/interfaces/activity-log.interface";
 import { countryErrorsMessages } from "../country.messages";
 import findCountryHelperService from "../helpers/validators/find-country.helper.service";
-import { countryPayload } from "../country.helper";
+import { populateFields, countryPayload } from "../country.helper";
+import createCountryHelperService from "../helpers/operations/create-country.helper.service";
+import { countryResponse } from "../country.response";
 
 class createCountryService {
   public async execute(
@@ -39,12 +41,25 @@ class createCountryService {
           throwIfExists: true,
           lean: true,
           returnDocument: false,
+          session,
         },
       );
 
-      //   const country = await this.countryRepository.create(body, { session });
+      const newCountry = await createCountryHelperService.execute(
+        body,
+        session,
+        DbTransactions,
+        countryErrorsMessages,
+      );
+
+      await newCountry.populate(populateFields);
+
       await session.commitTransaction();
-      return countryPayload("country_created", "country", DbTransactions);
+      return countryPayload(
+        "country_created",
+        countryResponse(newCountry),
+        DbTransactions,
+      );
     } catch (error) {
       await session.abortTransaction();
       const err = error as Error & { data?: any };

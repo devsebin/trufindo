@@ -23,7 +23,7 @@ export interface IUserPriority {
   priority: number;
 }
 
-export interface IUser {
+export interface IUser extends Document {
   first_name?: string;
   middle_name?: string;
   last_name?: string;

@@ -1,15 +1,42 @@
 import express from "express";
 import countryController from "./country.controller";
+import validationMiddleware, {
+  validationSource,
+} from "@/middlewares/request-validation.middleware";
+import {
+  countryInputValidator,
+  updateCountryInputValidator,
+  deleteCountryInputValidator,
+} from "./country.validator";
+import { paramsValidator } from "@/middlewares/request-url-object-id.validation.middleware";
+
 const router = express.Router();
-router.post("/store", countryController.Store);
+
+router.post("/",
+  validationMiddleware(countryInputValidator),
+  countryController.Store,
+);
+
 router.get("/", countryController.Index);
-router.get("/search", countryController.Search);
-router.get("/import", countryController.import);
-router.get("/export", countryController.export);
-router.get("/export-template", countryController.exportTemplate);
-router.get("/:id", countryController.Show);
-router.put("/:id", countryController.Update);
-router.delete("/:id", countryController.Delete);
-router.patch("/:id/enable", countryController.activate);
-router.patch("/:id/disable", countryController.deactivate);
+
+
+router.get("/:id", paramsValidator, countryController.Show);
+
+router.put(
+  "/:id",
+  paramsValidator,
+  validationMiddleware(updateCountryInputValidator),
+  countryController.Update,
+);
+
+router.delete(
+  "/:id",
+  paramsValidator,
+  validationMiddleware(deleteCountryInputValidator, validationSource.query),
+  countryController.Delete,
+);
+
+router.patch("/:id/enable", paramsValidator, countryController.activate);
+router.patch("/:id/disable", paramsValidator, countryController.deactivate);
+
 export default router;

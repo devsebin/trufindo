@@ -4,12 +4,30 @@ import Joi from "joi";
 
 export const countryInputValidator = Joi.object<ICountry>({
   name: Joi.string().trim().min(3).max(255).uppercase().required(),
-  iso_code: Joi.string().length(2).uppercase().required(), // ISO 3166-1 alpha-2
-  iso_code_3: Joi.string().length(3).uppercase().required(), // ISO 3166-1 alpha-3
-  phone_code: Joi.string().allow(null, ""), // Optional string
-  currency: Joi.string().allow(null, "").uppercase(), // Optional string
-  continent: Joi.string().allow(null, ""), // Optional string
-  region_ids: Joi.array().items(Joi.string()).allow(null),
-  timezone: Joi.array().items(Joi.string()).allow(null),
-  flags: Joi.string().optional().custom(objectIdValidator),
+  iso_code: Joi.string().length(2).uppercase().required(),
+  iso_code_3: Joi.string().length(3).uppercase().required(),
+  code: Joi.string().trim().required(),
+  phone_code: Joi.string().allow(null, "").required(),
+  currency: Joi.string().allow(null, "").uppercase().required(),
+  continent: Joi.string().allow(null, "").required(),
+  timezone: Joi.array().items(Joi.string()).allow(null).required(),
+  region_ids: Joi.array().items(Joi.string().custom(objectIdValidator)).optional(),
+  flags: Joi.string().optional().custom(objectIdValidator).allow(null, ""),
+});
+
+export const updateCountryInputValidator = Joi.object<ICountry>({
+  name: Joi.string().trim().min(3).max(255).uppercase().optional(),
+  iso_code: Joi.string().length(2).uppercase().optional(),
+  iso_code_3: Joi.string().length(3).uppercase().optional(),
+  code: Joi.string().trim().optional(),
+  phone_code: Joi.string().allow(null, "").optional(),
+  currency: Joi.string().allow(null, "").uppercase().optional(),
+  continent: Joi.string().allow(null, "").optional(),
+  timezone: Joi.array().items(Joi.string()).allow(null).optional(),
+  region_ids: Joi.array().items(Joi.string().custom(objectIdValidator)).optional(),
+  flags: Joi.string().optional().custom(objectIdValidator).allow(null, ""),
+});
+
+export const deleteCountryInputValidator = Joi.object({
+  force_action: Joi.boolean().optional(),
 });
