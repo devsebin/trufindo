@@ -1,32 +1,32 @@
-import { IDistrict } from "@/database/district/district-db-interface";
+import { IRegion } from "@/database/region/region-db-interface";
 import mongoose, { HydratedDocument } from "mongoose";
 import { DbTransaction } from "@/utils/interfaces/activity-log.interface";
-import { IUpdateDistrictPayloadStrict } from "../../payloads/create-district.payload";
+import { IUpdateRegionPayloadStrict } from "../../payloads/create-region.payload";
 import { updatedFields } from "@/utils/helpers/update-finder.helper";
-import { throwError } from "../../district.helper";
+import { throwError } from "../../region.helper";
 import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
-import { districtErrorResponse } from "../../district.response";
+import { regionErrorResponse } from "../../region.response";
 import { createDbTransaction } from "@/utils/helpers/db-transaction.helper";
 import { tableName } from "@/utils/definitions/constants/table-names";
 import { apiMethods } from "@/utils/definitions/constants/api-methods";
 import { operationTypes } from "@/utils/definitions/constants/operation-types";
 import { rethrowIfKnown } from "@/utils/responses/error.response";
 
-class updateDistrictHelperService {
+class updateRegionHelperService {
   constructor() {}
 
   public async execute(
     id: mongoose.Types.ObjectId,
-    payload: IUpdateDistrictPayloadStrict,
-    existing: HydratedDocument<IDistrict>,
+    payload: IUpdateRegionPayloadStrict,
+    existing: HydratedDocument<IRegion>,
     session: mongoose.ClientSession,
     dbTransactions: DbTransaction[],
     errorMap: Record<string, { message: string; status: number }>,
-  ): Promise<HydratedDocument<IDistrict>> {
+  ): Promise<HydratedDocument<IRegion>> {
     try {
       const changes = updatedFields(payload, existing);
       if (changes.length === 0) {
-        const data = districtErrorResponse(existing);
+        const data = regionErrorResponse(existing);
         throwError(
           "no_change_detected",
           ResponseBuilder.error(ErrorTypes.CONFLICT, {
@@ -40,13 +40,12 @@ class updateDistrictHelperService {
       existing.name = payload.name;
       existing.code = payload.code;
       existing.country_id = new mongoose.Types.ObjectId(payload.country_id);
-      existing.region_id = new mongoose.Types.ObjectId(payload.region_id);
 
       const saved = await existing.save({ session });
 
       dbTransactions.push(
         await createDbTransaction(
-          tableName.Districts,
+          tableName.Regions,
           apiMethods.PUT,
           operationTypes.Update,
           saved,
@@ -54,11 +53,11 @@ class updateDistrictHelperService {
         ),
       );
 
-      return saved as HydratedDocument<IDistrict>;
+      return saved as HydratedDocument<IRegion>;
     } catch (error) {
-      rethrowIfKnown(error, "Error while updating district", errorMap);
+      rethrowIfKnown(error, "Error while updating region", errorMap);
     }
   }
 }
 
-export default new updateDistrictHelperService();
+export default new updateRegionHelperService();

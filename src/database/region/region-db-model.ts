@@ -1,10 +1,10 @@
 import mongoose, { Schema } from "mongoose";
-import IDistrict from "./district-db-interface";
+import IRegion from "./region-db-interface";
 import { tableName } from "@/utils/definitions/constants/table-names";
 import { CommonServiceFieldsModel } from "@/utils/definitions/constants/db-constants";
 import { defaultStatusPlugin } from "@/utils/plugins/defaultStatus.plugin";
 
-const districtSchema = new Schema<IDistrict>(
+const regionSchema = new Schema<IRegion>(
   {
     name: { type: String, required: true },
     code: { type: String, required: true },
@@ -13,17 +13,12 @@ const districtSchema = new Schema<IDistrict>(
       ref: tableName.Countries,
       required: true,
     },
-    region_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: tableName.Regions,
-      required: true,
-    },
     ...CommonServiceFieldsModel,
   },
   { timestamps: true },
 );
 
-districtSchema.index(
+regionSchema.index(
   { code: 1 },
   {
     unique: true,
@@ -31,7 +26,7 @@ districtSchema.index(
   },
 );
 
-districtSchema.index(
+regionSchema.index(
   { name: 1 },
   {
     unique: true,
@@ -39,24 +34,24 @@ districtSchema.index(
   },
 );
 
-districtSchema.pre(/^find/, function (next) {
+regionSchema.pre(/^find/, function (next) {
   if (!this.getFilter().hasOwnProperty("is_deleted")) {
     this.where({ is_deleted: false, is_active: true });
   }
   next();
 });
 
-districtSchema.plugin(defaultStatusPlugin);
+regionSchema.plugin(defaultStatusPlugin);
 
-districtSchema.methods.toJSON = function () {
-  const districtObject = this.toObject();
-  delete districtObject.__v;
-  return districtObject;
+regionSchema.methods.toJSON = function () {
+  const regionObject = this.toObject();
+  delete regionObject.__v;
+  return regionObject;
 };
 
-const DistrictModel = mongoose.model<IDistrict>(
-  tableName.Districts,
-  districtSchema,
+const RegionModel = mongoose.model<IRegion>(
+  tableName.Regions,
+  regionSchema,
 );
 
-export default DistrictModel;
+export default RegionModel;

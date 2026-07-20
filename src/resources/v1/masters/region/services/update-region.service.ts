@@ -6,22 +6,20 @@ import {
 import { SingleResponse } from "@/utils/responses/success.response";
 import mongoose from "mongoose";
 import { Request } from "express";
-import findDistrictHelperService from "../helpers/validators/find-district.helper.service";
-import { populateFields, districtPayload } from "../district.helper";
-import { districtErrorsMessages } from "../district.messages";
-import updateDistrictHelperService from "../helpers/operations/update-district.helper.service";
-import { IUpdateDistrictPayloadStrict } from "../payloads/create-district.payload";
-import { districtResponse } from "../district.response";
+import findRegionHelperService from "../helpers/validators/find-region.helper.service";
+import { populateFields, regionPayload } from "../region.helper";
+import { regionErrorsMessages } from "../region.messages";
+import updateRegionHelperService from "../helpers/operations/update-region.helper.service";
+import { IUpdateRegionPayloadStrict } from "../payloads/create-region.payload";
+import { regionResponse } from "../region.response";
 import findCountryHelperService from "@/resources/v1/masters/country/helpers/validators/find-country.helper.service";
 import { countryErrorsMessages } from "@/resources/v1/masters/country/country.messages";
-import findRegionHelperService from "@/resources/v1/masters/region/helpers/validators/find-region.helper.service";
-import { regionErrorsMessages } from "@/resources/v1/masters/region/region.messages";
 
-class updateDistrictService {
+class updateRegionService {
   public async execute(
     id: mongoose.Types.ObjectId,
     request: Request,
-    payload?: IUpdateDistrictPayloadStrict,
+    payload?: IUpdateRegionPayloadStrict,
   ): Promise<SingleResponse | ErrorResponse> {
     const DbTransactions: DbTransaction[] = [];
     const session = await mongoose.startSession();
@@ -29,9 +27,9 @@ class updateDistrictService {
     try {
       session.startTransaction();
 
-      const existing = await findDistrictHelperService.execute(
+      const existing = await findRegionHelperService.execute(
         { _id: id },
-        districtErrorsMessages,
+        regionErrorsMessages,
         {
           throwIfNotFound: true,
           lean: false,
@@ -40,7 +38,7 @@ class updateDistrictService {
         },
       );
 
-      const body = payload ?? (request.body as IUpdateDistrictPayloadStrict);
+      const body = payload ?? (request.body as IUpdateRegionPayloadStrict);
 
       // Check if country exists if country_id is provided
       if (body.country_id) {
@@ -56,32 +54,18 @@ class updateDistrictService {
         );
       }
 
-      // Check if region exists if region_id is provided
-      if (body.region_id) {
-        await findRegionHelperService.execute(
-          { _id: new mongoose.Types.ObjectId(body.region_id) } as any,
-          regionErrorsMessages,
-          {
-            throwIfNotFound: true,
-            lean: true,
-            returnDocument: false,
-            session,
-          },
-        );
-      }
-
       // Check duplicates for name or code (excluding self)
       if ((body.name && body.name !== existing[0].name) || (body.code && body.code.toUpperCase() !== existing[0].code)) {
         const queryOr: any[] = [];
         if (body.name && body.name !== existing[0].name) queryOr.push({ name: body.name });
         if (body.code && body.code.toUpperCase() !== existing[0].code) queryOr.push({ code: body.code.toUpperCase() });
 
-        await findDistrictHelperService.execute(
+        await findRegionHelperService.execute(
           {
             $or: queryOr,
             _id: { $ne: id },
           } as any,
-          districtErrorsMessages,
+          regionErrorsMessages,
           {
             throwIfExists: true,
             lean: true,
@@ -91,32 +75,32 @@ class updateDistrictService {
         );
       }
 
-      const updated = await updateDistrictHelperService.execute(
+      const updated = await updateRegionHelperService.execute(
         id,
         body,
         existing[0],
         session,
         DbTransactions,
-        districtErrorsMessages,
+        regionErrorsMessages,
       );
 
       await updated.populate(populateFields);
 
       await session.commitTransaction();
 
-      return districtPayload(
-        "district_updated",
-        districtResponse(updated),
+      return regionPayload(
+        "region_updated",
+        regionResponse(updated),
         DbTransactions,
       );
     } catch (error) {
       await session.abortTransaction();
       const err = error as Error & { data?: any };
-      return buildErrorResult(err.message, districtErrorsMessages, err.data);
+      return buildErrorResult(err.message, regionErrorsMessages, err.data);
     } finally {
       session.endSession();
     }
   }
 }
 
-export default new updateDistrictService();
+export default new updateRegionService();

@@ -3,6 +3,7 @@ import { describe, it, expect, beforeAll, beforeEach, afterAll } from "@jest/glo
 
 import DistrictModel from "@/database/district/district-db-model";
 import CountryModel from "@/database/country/country-db-model";
+import RegionModel from "@/database/region/region-db-model";
 import StatusModel from "@/database/status/status-db-model";
 import "@/database/users/users-db-model";
 import { connectDB, clearDB, closeDB } from "@/tests/setup/mongo-memory";
@@ -36,6 +37,16 @@ const createMockCountry = async () => {
   });
 };
 
+const createMockRegion = async (countryId: mongoose.Types.ObjectId) => {
+  return await RegionModel.create({
+    name: "California",
+    code: "CA",
+    country_id: countryId,
+    is_active: true,
+    is_deleted: false,
+  });
+};
+
 const buildCreatePayload = (
   overrides: Partial<IInputDistrictPayloadStrict> = {},
 ): IInputDistrictPayloadStrict => {
@@ -43,6 +54,7 @@ const buildCreatePayload = (
     name: overrides.name ?? "Sample District",
     code: overrides.code ?? "SD",
     country_id: overrides.country_id,
+    region_id: overrides.region_id,
     ...(overrides as any),
   } as IInputDistrictPayloadStrict;
 };
@@ -54,6 +66,7 @@ const buildUpdatePayload = (
     name: overrides.name ?? "Updated District",
     code: overrides.code ?? "UD",
     country_id: overrides.country_id,
+    region_id: overrides.region_id,
     ...(overrides as any),
   } as IUpdateDistrictPayloadStrict;
 };
@@ -95,7 +108,8 @@ describe("Master Districts (Integration - Service)", () => {
 
   it("create-district: should create a district successfully", async () => {
     const country = await createMockCountry();
-    const payload = buildCreatePayload({ country_id: country._id });
+    const region = await createMockRegion(country._id);
+    const payload = buildCreatePayload({ country_id: country._id, region_id: region._id });
 
     const req = {
       body: payload,
@@ -112,17 +126,27 @@ describe("Master Districts (Integration - Service)", () => {
     expect(created).not.toBeNull();
     expect(created?.code).toBe("SD");
     expect(created?.country_id?.toString()).toBe(country._id.toString());
+    expect(created?.region_id?.toString()).toBe(region._id.toString());
   });
 
   it("create-district: should fail if district already exists (same name or code)", async () => {
+    const country = await createMockCountry();
+    const region = await createMockRegion(country._id);
     await DistrictModel.create({
       name: "Sample District",
       code: "SD",
+      country_id: country._id,
+      region_id: region._id,
       is_active: true,
       is_deleted: false,
     });
 
-    const payload = buildCreatePayload({ name: "Sample District", code: "SD" });
+    const payload = buildCreatePayload({
+      name: "Sample District",
+      code: "SD",
+      country_id: country._id,
+      region_id: region._id,
+    });
     const req = {
       body: payload,
       originalUrl: "/v1/masters/districts",
@@ -135,10 +159,51 @@ describe("Master Districts (Integration - Service)", () => {
     expectFailure(result, 409);
   });
 
+  it("create-district: should fail if country does not exist", async () => {
+    const country = await createMockCountry();
+    const region = await createMockRegion(country._id);
+    const payload = buildCreatePayload({
+      country_id: new mongoose.Types.ObjectId(),
+      region_id: region._id,
+    });
+    const req = {
+      body: payload,
+      originalUrl: "/v1/masters/districts",
+      method: "POST",
+      query: {},
+      user: { role: "admin", id: makeUserId() },
+    } as any;
+
+    const result: any = await createDistrictService.execute(req, payload);
+    expectFailure(result, 404);
+  });
+
+  it("create-district: should fail if region does not exist", async () => {
+    const country = await createMockCountry();
+    const payload = buildCreatePayload({
+      country_id: country._id,
+      region_id: new mongoose.Types.ObjectId(),
+    });
+    const req = {
+      body: payload,
+      originalUrl: "/v1/masters/districts",
+      method: "POST",
+      query: {},
+      user: { role: "admin", id: makeUserId() },
+    } as any;
+
+    const result: any = await createDistrictService.execute(req, payload);
+    expectFailure(result, 404);
+  });
+
   it("list-district: should retrieve districts with pagination", async () => {
+    const country = await createMockCountry();
+    const region = await createMockRegion(country._id);
     await DistrictModel.create({
       name: "District One",
       code: "D1",
+      country_id: country._id,
+      region_id: region._id,
       is_active: true,
       is_deleted: false,
     });
@@ -146,6 +211,8 @@ describe("Master Districts (Integration - Service)", () => {
     await DistrictModel.create({
       name: "District Two",
       code: "D2",
+      country_id: country._id,
+      region_id: region._id,
       is_active: true,
       is_deleted: false,
     });
@@ -174,9 +241,13 @@ describe("Master Districts (Integration - Service)", () => {
   });
 
   it("show-district: should fetch by id and return 404 if not found", async () => {
+    const country = await createMockCountry();
+    const region = await createMockRegion(country._id);
     const district = await DistrictModel.create({
       name: "District Show",
       code: "DS",
+      country_id: country._id,
+      region_id: region._id,
       is_active: true,
       is_deleted: false,
     });
@@ -193,10 +264,14 @@ describe("Master Districts (Integration - Service)", () => {
     expectFailure(notFoundResult, 404);
   });
 
-  it("update-district: should update fields, and fail when no changes or conflicting duplicates", async () => {
+  it("update-district: should update fields, and fail when no changes, conflicting duplicates, or invalid references", async () => {
+    const country = await createMockCountry();
+    const region = await createMockRegion(country._id);
     const existingDistrict = await DistrictModel.create({
       name: "District Old",
       code: "DO",
+      country_id: country._id,
+      region_id: region._id,
       is_active: true,
       is_deleted: false,
     });
@@ -204,12 +279,19 @@ describe("Master Districts (Integration - Service)", () => {
     const otherDistrict = await DistrictModel.create({
       name: "District Other",
       code: "DT",
+      country_id: country._id,
+      region_id: region._id,
       is_active: true,
       is_deleted: false,
     });
 
     // Successful update
-    const payload = buildUpdatePayload({ name: "District New", code: "DN" });
+    const payload = buildUpdatePayload({
+      name: "District New",
+      code: "DN",
+      country_id: country._id,
+      region_id: region._id,
+    });
     const req = { body: payload } as any;
 
     const okResult: any = await updateDistrictService.execute(
@@ -224,7 +306,12 @@ describe("Master Districts (Integration - Service)", () => {
     expect(updated?.code).toBe("DN");
 
     // Fail because of no change detected
-    const samePayload = buildUpdatePayload({ name: "District New", code: "DN" });
+    const samePayload = buildUpdatePayload({
+      name: "District New",
+      code: "DN",
+      country_id: country._id,
+      region_id: region._id,
+    });
     const sameReq = { body: samePayload } as any;
 
     const noChangeResult: any = await updateDistrictService.execute(
@@ -235,7 +322,12 @@ describe("Master Districts (Integration - Service)", () => {
     expectFailure(noChangeResult, 400);
 
     // Fail because of conflict duplicate with existing other district
-    const duplicatePayload = buildUpdatePayload({ name: "District Other", code: "DT" });
+    const duplicatePayload = buildUpdatePayload({
+      name: "District Other",
+      code: "DT",
+      country_id: country._id,
+      region_id: region._id,
+    });
     const duplicateReq = { body: duplicatePayload } as any;
 
     const duplicateResult: any = await updateDistrictService.execute(
@@ -244,13 +336,49 @@ describe("Master Districts (Integration - Service)", () => {
       duplicatePayload,
     );
     expectFailure(duplicateResult, 409);
+
+    // Fail because of invalid country id
+    const invalidCountryPayload = buildUpdatePayload({
+      name: "District Valid",
+      code: "DV",
+      country_id: new mongoose.Types.ObjectId() as any,
+      region_id: region._id,
+    });
+    const invalidCountryReq = { body: invalidCountryPayload } as any;
+
+    const invalidCountryResult: any = await updateDistrictService.execute(
+      existingDistrict._id,
+      invalidCountryReq,
+      invalidCountryPayload,
+    );
+    expectFailure(invalidCountryResult, 404);
+
+    // Fail because of invalid region id
+    const invalidRegionPayload = buildUpdatePayload({
+      name: "District Valid",
+      code: "DV",
+      country_id: country._id,
+      region_id: new mongoose.Types.ObjectId() as any,
+    });
+    const invalidRegionReq = { body: invalidRegionPayload } as any;
+
+    const invalidRegionResult: any = await updateDistrictService.execute(
+      existingDistrict._id,
+      invalidRegionReq,
+      invalidRegionPayload,
+    );
+    expectFailure(invalidRegionResult, 404);
   });
 
   it("activate/deactivate-district: should toggle active state and reject invalid transitions", async () => {
+    const country = await createMockCountry();
+    const region = await createMockRegion(country._id);
     const userId = makeUserId();
     const district = await DistrictModel.create({
       name: "Toggle District",
       code: "TD",
+      country_id: country._id,
+      region_id: region._id,
       is_active: false,
       is_deleted: false,
     });
@@ -288,10 +416,14 @@ describe("Master Districts (Integration - Service)", () => {
   });
 
   it("delete-district: should soft delete district, respecting confirmation and already deleted conditions", async () => {
+    const country = await createMockCountry();
+    const region = await createMockRegion(country._id);
     const userId = makeUserId();
     const activeDistrict = await DistrictModel.create({
       name: "To Delete",
       code: "TDE",
+      country_id: country._id,
+      region_id: region._id,
       is_active: true,
       is_deleted: false,
     });

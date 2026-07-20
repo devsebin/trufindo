@@ -1,6 +1,6 @@
 import { statusCodes } from "@/utils/definitions/constants/common";
 
-export const districtErrorsMessages = {
+export const regionErrorsMessages = {
   created_by_format: {
     message: "created by format is invalid {0}",
     status: statusCodes.BadRequest,
@@ -10,15 +10,15 @@ export const districtErrorsMessages = {
     status: statusCodes.BadRequest,
   },
   invalid_id: {
-    message: "Invalid district id: {0}",
+    message: "Invalid region id: {0}",
     status: statusCodes.BadRequest,
   },
-  district_not_found: {
-    message: "District not found with id: {0}",
+  region_not_found: {
+    message: "Region not found with id: {0}",
     status: statusCodes.NotFound,
   },
   already_exists: {
-    message: "District already exists with name/code: {0}",
+    message: "Region already exists with name/code: {0}",
     status: statusCodes.Conflict,
   },
   invalid_request: {
@@ -26,66 +26,62 @@ export const districtErrorsMessages = {
     status: statusCodes.BadRequest,
   },
   already_activated: {
-    message: "District is already activated with name: {0} and id: {1}",
+    message: "Region is already activated with name: {0} and id: {1}",
     status: statusCodes.BadRequest,
   },
   already_inactive: {
-    message: "District is already inactive with name: {0} and id: {1}",
+    message: "Region is already inactive with name: {0} and id: {1}",
     status: statusCodes.BadRequest,
   },
   confirmation_required: {
-    message: "Confirmation required to delete district",
+    message: "Confirmation required to delete region",
     status: statusCodes.BadRequest,
   },
   already_deleted: {
-    message: "District is already deleted with name: {0} and id: {1}",
+    message: "Region is already deleted with name: {0} and id: {1}",
     status: statusCodes.BadRequest,
   },
   not_deleted: {
-    message: "District is not deleted with name: {0} and id: {1}",
+    message: "Region is not deleted with name: {0} and id: {1}",
     status: statusCodes.BadRequest,
   },
   no_change_detected: {
-    message: "No change detected in district with name: {0} and id: {1}",
+    message: "No change detected in region with name: {0} and id: {1}",
     status: statusCodes.BadRequest,
   },
   country_not_found: {
     message: "Country not found with id: {0}",
     status: statusCodes.NotFound,
   },
-  region_not_found: {
-    message: "Region not found with id: {0}",
-    status: statusCodes.NotFound,
-  },
 };
 
-export const districtSuccessMessages = {
-  district_created: {
-    message: "District created successfully.",
+export const regionSuccessMessages = {
+  region_created: {
+    message: "Region created successfully.",
     status: statusCodes.Created,
   },
-  district_activate: {
-    message: "District activated successfully.",
+  region_activate: {
+    message: "Region activated successfully.",
     status: statusCodes.OK,
   },
-  district_deactivate: {
-    message: "District deactivated successfully.",
+  region_deactivate: {
+    message: "Region deactivated successfully.",
     status: statusCodes.OK,
   },
-  district_deleted: {
-    message: "District deleted successfully.",
+  region_deleted: {
+    message: "Region deleted successfully.",
     status: statusCodes.OK,
   },
-  district_listed: {
-    message: "Districts listed successfully.",
+  region_listed: {
+    message: "Regions listed successfully.",
     status: statusCodes.OK,
   },
-  district_fetched: {
-    message: "District details fetched successfully.",
+  region_fetched: {
+    message: "Region details fetched successfully.",
     status: statusCodes.OK,
   },
-  district_updated: {
-    message: "District updated successfully.",
+  region_updated: {
+    message: "Region updated successfully.",
     status: statusCodes.OK,
   },
 };

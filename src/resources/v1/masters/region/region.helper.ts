@@ -3,16 +3,16 @@ import { CustomError } from "@/utils/responses/error.response";
 import { successResponse } from "@/utils/responses/success.response";
 import { ApiResponse } from "@/utils/responses/api.response";
 import {
-  districtErrorsMessages,
-  districtSuccessMessages,
-} from "./district.messages";
+  regionErrorsMessages,
+  regionSuccessMessages,
+} from "./region.messages";
 
-export function districtPayload(
-  type: keyof typeof districtSuccessMessages,
+export function regionPayload(
+  type: keyof typeof regionSuccessMessages,
   data: any = [],
   DbTransaction: DbTransaction[] = [],
 ) {
-  const { message, status } = districtSuccessMessages[type];
+  const { message, status } = regionSuccessMessages[type];
   return {
     result: successResponse(message, status, data),
     DbTransaction: DbTransaction,
@@ -20,7 +20,7 @@ export function districtPayload(
 }
 
 export function throwError<T = any>(
-  message: keyof typeof districtErrorsMessages,
+  message: keyof typeof regionErrorsMessages,
   data: ApiResponse<T>,
 ): never {
   const error = new Error() as CustomError;
@@ -50,10 +50,6 @@ export const populateFields = [
   {
     path: "country_id",
     select: "name iso_code",
-  },
-  {
-    path: "region_id",
-    select: "name code",
   },
 ];
 

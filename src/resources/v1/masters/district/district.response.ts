@@ -18,11 +18,21 @@ const countryResponse = (country: any) =>
       }
     : null;
 
+const regionResponse = (region: any) =>
+  region
+    ? {
+        id: region._id,
+        name: region.name,
+        code: region.code,
+      }
+    : null;
+
 export const districtResponse = (district: any): any => ({
   id: district._id,
   name: district.name,
   code: district.code,
   country: countryResponse(district.country_id),
+  region: regionResponse(district.region_id),
   is_active: district.is_active,
   is_deleted: district.is_deleted,
 
