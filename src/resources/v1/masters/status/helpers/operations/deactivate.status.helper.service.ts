@@ -3,13 +3,11 @@ import { DbTransaction } from "@/utils/interfaces/activity-log.interface";
 import { rethrowIfKnown } from "@/utils/responses/error.response";
 import mongoose, { HydratedDocument, Model } from "mongoose";
 import StatusModel from "@/database/status/status-db-model";
-import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 import { updatedFields } from "@/utils/helpers/update-finder.helper";
 import { createDbTransaction } from "@/utils/helpers/db-transaction.helper";
 import { tableName } from "@/utils/definitions/constants/table-names";
 import { apiMethods } from "@/utils/definitions/constants/api-methods";
 import { operationTypes } from "@/utils/definitions/constants/operation-types";
-import { throwError } from "../../status.helper";
 
 class deactivateStatusHelperService {
   private readonly statusRepository = Model<IStatus>;

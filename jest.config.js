@@ -8,6 +8,13 @@ module.exports = {
 
   setupFilesAfterEnv: ["<rootDir>/src/tests/setup/jest.setup.ts"],
 
+  // Prevent MongoDB transaction lock contention across multiple workers
+  maxWorkers: 1,
+
+  // Allow MongoMemoryReplSet shutdown to finish reliably
+  testTimeout: 30000,
+
+
   transform: {
     "^.+\\.(ts|js)$": "ts-jest",
   },

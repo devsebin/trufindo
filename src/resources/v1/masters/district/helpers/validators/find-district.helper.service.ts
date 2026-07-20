@@ -1,30 +1,29 @@
 import mongoose, { HydratedDocument, Model, Types } from "mongoose";
 import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 import { rethrowIfKnown } from "@/utils/responses/error.response";
+import DistrictModel from "@/database/district/district-db-model";
+import { IDistrict } from "@/database/district/district-db-interface";
+import { throwError } from "../../district.helper";
 import { IBaseFindOptions } from "@/utils/interfaces/base-find-query.interface";
 import StrictFilterQuery from "@/utils/helpers/query-filter";
-import ICountry from "@/database/country/country-db-interface";
-import CountryModel from "@/database/country/country-db-model";
-import { throwError } from "../../country.helper";
 
-export type IFindCountry = StrictFilterQuery<
-  ICountry & { _id: Types.ObjectId }
->;
+export type IFindDistrict = StrictFilterQuery<IDistrict & { _id: Types.ObjectId }>;
 
-class findCountryHelperService {
-  private readonly countryRepository: Model<ICountry>;
+class findDistrictHelperService {
+  private readonly districtRepository: Model<IDistrict>;
 
   constructor() {
-    this.countryRepository = CountryModel;
+    this.districtRepository = DistrictModel;
   }
 
   public async execute(
-    query: IFindCountry,
+    query: IFindDistrict,
     errorMap: Record<string, { message: string; status: number }>,
     options: IBaseFindOptions & {
       session?: mongoose.ClientSession;
+      populate?: any;
     } = {},
-  ): Promise<HydratedDocument<ICountry>[]> {
+  ): Promise<HydratedDocument<IDistrict>[]> {
     const {
       throwIfExists = false,
       throwIfNotFound = false,
@@ -32,13 +31,18 @@ class findCountryHelperService {
       lean = false,
       select,
       session,
+      populate,
     } = options;
 
     try {
-      let dbQuery = this.countryRepository.find(query).session(session || null);
+      let dbQuery = this.districtRepository.find(query).session(session || null);
 
       if (select) {
         dbQuery = dbQuery.select(select);
+      }
+
+      if (populate) {
+        dbQuery = dbQuery.populate(populate);
       }
 
       if (lean) {
@@ -49,7 +53,7 @@ class findCountryHelperService {
 
       if (throwIfExists && documents.length > 0) {
         const response = ResponseBuilder.error(ErrorTypes.CONFLICT, {
-          message: "country already exists",
+          message: "district already exists",
           data: query,
           filler: { 0: documents[0].name },
         });
@@ -59,22 +63,22 @@ class findCountryHelperService {
 
       if (throwIfNotFound && documents.length === 0) {
         const response = ResponseBuilder.error(ErrorTypes.NOT_FOUND, {
-          message: "county not found",
+          message: "district not found",
           data: query,
         });
 
-        throwError("country_not_found", response);
+        throwError("district_not_found", response);
       }
 
       if (!returnDocument) {
         return [];
       }
 
-      return documents as HydratedDocument<ICountry>[];
+      return documents as HydratedDocument<IDistrict>[];
     } catch (error) {
-      rethrowIfKnown(error, "Error while finding country", errorMap);
+      rethrowIfKnown(error, "Error while finding district", errorMap);
     }
   }
 }
 
-export default new findCountryHelperService();
+export default new findDistrictHelperService();

@@ -4,6 +4,8 @@ import { MongoMemoryReplSet } from "mongodb-memory-server";
 let mongo: MongoMemoryReplSet;
 
 export const connectDB = async () => {
+  if (mongoose.connection.readyState === 1) return;
+
   mongo = await MongoMemoryReplSet.create({
     replSet: {
       count: 1,
@@ -24,7 +26,12 @@ export const clearDB = async () => {
 };
 
 export const closeDB = async () => {
-  await mongoose.connection.dropDatabase();
-  await mongoose.connection.close();
-  await mongo.stop();
+  // Make shutdown deterministic for jest: avoid long dropDatabase calls.
+  try {
+    await mongoose.connection.close();
+  } finally {
+    if (mongo) {
+      await mongo.stop();
+    }
+  }
 };

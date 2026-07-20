@@ -7,7 +7,15 @@ let cachedDefaultStatusId: any = null;
 
 async function getDefaultStatusId() {
   if (cachedDefaultStatusId) {
-    return cachedDefaultStatusId;
+    const exists = await StatusModel.exists({
+      _id: cachedDefaultStatusId,
+      is_deleted: false,
+      is_active: true,
+    });
+    if (exists) {
+      return cachedDefaultStatusId;
+    }
+    cachedDefaultStatusId = null;
   }
 
   const defaultStatus = await StatusModel.findOne({

@@ -1,5 +1,4 @@
 import { IStatus } from "@/database/status/status-db-interface";
-import StatusModel from "@/database/status/status-db-model";
 import { apiMethods } from "@/utils/definitions/constants/api-methods";
 import { operationTypes } from "@/utils/definitions/constants/operation-types";
 import { tableName } from "@/utils/definitions/constants/table-names";

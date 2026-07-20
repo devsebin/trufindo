@@ -10,4 +10,4 @@ beforeEach(async () => {
 
 afterAll(async () => {
   await closeDB();
-});
+}, 120000);
