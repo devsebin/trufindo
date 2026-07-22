@@ -50,6 +50,19 @@ class OtpService {
         session,
       );
 
+      if (object.type === "login") {
+        const user = await findUserHelperService.findUserByPhone(phoneE164, object.user_type, session);
+        if (!user) {
+          const response = ResponseBuilder.error(ErrorTypes.NOT_FOUND, {
+            message: `User not found with phone number ${phoneE164}`,
+            data: { phoneE164 },
+            filler: { phoneE164 },
+          });
+          throwError("user_not_found", response);
+        }
+      }
+
+
       if (object.type === "register") {
         if (object.user_type !== "user") {
           const response = ResponseBuilder.error(ErrorTypes.BAD_REQUEST, {

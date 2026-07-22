@@ -24,7 +24,6 @@ const phoneField = Joi.string()
   .required()
   .custom((value, helpers) => {
     const { country } = helpers.state.ancestors[0];
-
     if (!country) {
       return helpers.error("phone.countryRequired");
     }
@@ -34,7 +33,7 @@ const phoneField = Joi.string()
     try {
       phoneNumber = value.startsWith("+")
         ? parsePhoneNumberFromString(value)
-        : parsePhoneNumberFromString(value, country);
+        : parsePhoneNumberFromString(value, country.toUpperCase());
     } catch (err) {
       return helpers.error("phone.invalidFormat");
     }

@@ -2,6 +2,33 @@
 
 **Title:** As an Admin, I want to update a declaimer by creating a new version.
 
+## **Workflow Diagram**
+
+```mermaid
+flowchart TD
+    A[Client Request] --> B(Express Router PUT /:id)
+    B --> C{authenticate & authorization}
+    C -- Unauthorized --> D[401/403 Error]
+    C -- Authorized --> E{paramsValidator}
+    E -- Invalid ID format --> F[400 Bad Request]
+    E -- Valid ID --> G{validationMiddleware}
+    G -- Invalid Payload --> F
+    G -- Valid Payload --> H(declaimerController.Update)
+    H --> I(updateDeclaimerService.execute)
+    I --> J[Start Mongoose Session & Transaction]
+    J --> K(validateDeclaimer existence)
+    K -- Not found --> L[Abort Transaction / Return declaimer_not_found]
+    K -- Found --> M(updatedFields change detection)
+    M -- No changes --> L[Abort Transaction / Return no_changes_detected]
+    M -- Changes found --> N(getNextVersion)
+    N --> O(createNewVersion)
+    O --> P[Update older versions set is_latest = false]
+    P --> Q[Create new Declaimer document with incremented version & is_latest = true]
+    Q --> R(createDbTransaction log)
+    R --> S[Commit Transaction]
+    S --> T[200 OK + Updated declaimer version details]
+```
+
 ## **Acceptance Criteria**
 
 When updating a declaimer:
@@ -50,7 +77,7 @@ When updating a declaimer:
 ## **Validation & Error Handling**
 
 - If ObjectId is invalid → return **invalid_id** error.
-- If declaimer not found → return **declaimer_not_fount** error.
+- If declaimer not found → return **declaimer_not_found** error.
 - If no changes detected → return **no_changes_detected** error.
 - If new version creation fails → return **declaimer_not_created** error.
 - Any unexpected error:

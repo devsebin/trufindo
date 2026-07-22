@@ -2,6 +2,25 @@
 
 **Title:** As an Admin, I want to fetch a declaimer by ID.
 
+## **Workflow Diagram**
+
+```mermaid
+flowchart TD
+    A[Client Request] --> B(Express Router GET /:id)
+    B --> C{authenticate & authorization}
+    C -- Unauthorized --> D[401/403 Error]
+    C -- Authorized --> E{paramsValidator}
+    E -- Invalid ID format --> F[400 Bad Request]
+    E -- Valid ID --> G(declaimerController.Show)
+    G --> H(showDeclaimerService.execute)
+    H --> I[Start Mongoose Session & Transaction]
+    I --> J[Query Declaimer by ID]
+    J -- Not found --> K[Abort Transaction / Return declaimer_not_found]
+    J -- Found --> L(createDbTransaction log)
+    L --> M[Commit Transaction]
+    M --> N[200 OK + Declaimer details]
+```
+
 ## **Acceptance Criteria**
 
 When fetching a declaimer:
@@ -16,7 +35,7 @@ When fetching a declaimer:
 - If object_id is invalid:
   - Return **invalid_id** error.
 - If no declaimer is found for the given ID:
-  - Return **declaimer_not_fount** error.
+  - Return **declaimer_not_found** error.
 
 ## **Data Retrieval Behavior**
 

@@ -2,6 +2,30 @@
 
 **Title:** As an Admin, I want to create a new declaimer.
 
+## **Workflow Diagram**
+
+```mermaid
+flowchart TD
+    A[Client Request] --> B(Express Router POST /)
+    B --> C{authenticate & authorization}
+    C -- Unauthorized --> D[401/403 Error]
+    C -- Authorized --> E{validationMiddleware}
+    E -- Invalid Payload --> F[400 Bad Request]
+    E -- Valid Payload --> G(declaimerController.Store)
+    G --> H(createDeclaimerService.execute)
+    H --> I[Start Mongoose Session & Transaction]
+    I --> J(validateCountryCode)
+    J -- Country does not exist --> K[Abort Transaction / Return country_not_found]
+    J -- Country exists --> L(validateDeclaimer uniqueness)
+    L -- Declaimer already exists for same language & country --> M[Abort / Return declaimer_already_exists]
+    L -- Declaimer is unique --> N(getNextVersion)
+    N --> O(createDeclaimer)
+    O --> P[Insert declaimer record, auto-incremented version]
+    P --> Q(createDbTransaction log)
+    Q --> R[Commit Transaction]
+    R --> S[201 Created + Declaimer payload]
+```
+
 ## **Acceptance Criteria**
 
 When creating a declaimer:

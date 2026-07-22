@@ -4,6 +4,51 @@
 I want to create an account using my phone number and verify it with a code,
 So that I can securely access the platform and use its services.
 
+## **Workflow Diagram**
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as User App
+    participant Route as Express Router
+    participant Ctrl as Authentication Controller
+    participant AuthServ as Auth Service
+    participant UserServ as User Service
+    participant DB as MongoDB (Mongoose Session)
+
+    User->>Route: 1. Send OTP Request (phone, country)
+    Route->>Ctrl: SentOtp(req)
+    Ctrl->>AuthServ: execute(payload)
+    AuthServ->>DB: Start Mongoose Session
+    AuthServ->>DB: Normalize Phone / Validate User Check
+    AuthServ->>DB: Apply OTP limits / Expire old OTPs
+    AuthServ->>DB: Generate OTP, Hash and Store
+    AuthServ->>DB: Commit Transaction
+    AuthServ-->>Ctrl: OTP Saved Success
+    Ctrl-->>User: 200 OK + OTP ID & Expiry Details
+
+    Note over User, DB: User receives SMS OTP and submits it
+
+    User->>Route: 2. Verify OTP (otp_id, code)
+    Route->>Ctrl: VerifyOtp(req)
+    Ctrl->>AuthServ: execute(payload, otp_id)
+    AuthServ->>DB: Start Mongoose Session & Find OTP
+    AuthServ->>DB: Compare OTP Hash & Check Expiry
+    AuthServ->>DB: Mark OTP verified & Commit
+    AuthServ-->>Ctrl: Verification success + auth tokens
+    Ctrl-->>User: 200 OK + JWT Tokens (Access/Refresh)
+
+    Note over User, DB: Subsequent registration steps (Basic Details, Service Selection, Documents)
+
+    User->>Route: 3. Complete Details & Upload Docs
+    Route->>Ctrl: updateBasicDetails() / updateServiceDetails() / uploadDocument()
+    Ctrl->>UserServ: Execute updates inside session
+    UserServ->>DB: Perform DB transactions (snapshots recorded)
+    UserServ-->>Ctrl: Success response
+    Ctrl-->>User: 200 OK + updated registration state
+```
+
+
 ## **Screen Play**
 
 - <b>Screen one: Phone Entry Screen</b>

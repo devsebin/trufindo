@@ -2,6 +2,24 @@
 
 **Title:** As an Admin, I want to list declaimers with filtering, pagination, and sorting.
 
+## **Workflow Diagram**
+
+```mermaid
+flowchart TD
+    A[Client Request] --> B(Express Router GET /)
+    B --> C{authenticate & authorization}
+    C -- Unauthorized --> D[401/403 Error]
+    C -- Authorized --> E(declaimerController.Index)
+    E --> F(listDeclaimerService.execute)
+    F --> G[Start Mongoose Session & Transaction]
+    G --> H[Parse page, limit, order, fields, populate]
+    H --> I(buildWhereClause)
+    I --> J[Fetch declaimers list & count total documents in Promise.all]
+    J --> K(createDbTransaction log)
+    K --> L[Commit Transaction]
+    L --> M[200 OK + Paginated list of declaimers]
+```
+
 ## **Acceptance Criteria**
 
 When fetching declaimers:
