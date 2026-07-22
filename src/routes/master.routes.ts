@@ -8,7 +8,7 @@ import districtRoutes from "@/resources/v1/masters/district/district.routes";
 import countryRoutes from "@/resources/v1/masters/country/country.routes";
 import { authorization } from "@/middlewares/authorization-validation.middleware";
 import authenticate from "@/middlewares/authentication-validation.middleware";
-
+import declaimerRoutes from "@/resources/v1/masters/declaimers/declaimer.routes";
 const router = Router();
 router.use("/statuses", authenticate, authorization, statusRoutes);
 router.use("/priorities", authenticate, authorization, priorityRoutes);
@@ -16,5 +16,7 @@ router.use("/providers", authenticate, authorization, providerRoutes);
 router.use("/regions", authenticate, authorization, regionRoutes);
 router.use("/districts", authenticate, authorization, districtRoutes);
 router.use("/countries", authenticate, authorization, countryRoutes);
+router.use("/declaimers", authenticate, authorization, declaimerRoutes);
+
 
 export default router;

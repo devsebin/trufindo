@@ -9,6 +9,7 @@ export enum declaimerKeys {
   FAQ = "faq",
   DISCLAIMER = "disclaimer",
 }
+
 /* ------------------ ObjectId Validator ------------------ */
 const objectId = Joi.string().custom((value, helpers) => {
   if (!mongoose.Types.ObjectId.isValid(value)) {

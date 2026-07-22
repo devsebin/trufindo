@@ -4,7 +4,7 @@ import { Strict } from "@/utils/helpers/query-filter";
 /**
  * Base payload (all fields optional, strictly from IUser)
  */
-export interface IInputCountryPayload extends Partial<ICountry> {}
+export interface IInputCountryPayload extends Partial<ICountry> { }
 
 /**
  * Strict payload
@@ -13,33 +13,32 @@ export interface IInputCountryPayload extends Partial<ICountry> {}
  */
 export interface IInputICountryPayloadStrict extends Strict<
   Partial<ICountry> &
-    Required<
-      Pick<
-        ICountry,
-        | "name"
-        | "iso_code"
-        | "iso_code_3"
-        | "code"
-        | "phone_code"
-        | "currency"
-        | "continent"
-        | "timezone"
-      >
+  Required<
+    Pick<
+      ICountry,
+      | "name"
+      | "iso_code"
+      | "iso_code_3"
+      | "phone_code"
+      | "currency"
+      | "continent"
+      | "timezone"
     >
-> {}
+  >
+> { }
 
 export interface IUpdateICountryPayloadStrict extends Strict<
   Partial<ICountry> &
-    Required<
-      Pick<
-        ICountry,
-        | "name"
-        | "iso_code"
-        | "iso_code_3"
-        | "phone_code"
-        | "currency"
-        | "continent"
-        | "timezone"
-      >
+  Required<
+    Pick<
+      ICountry,
+      | "name"
+      | "iso_code"
+      | "iso_code_3"
+      | "phone_code"
+      | "currency"
+      | "continent"
+      | "timezone"
     >
-> {}
+  >
+> { }

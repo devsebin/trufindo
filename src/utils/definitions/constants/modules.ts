@@ -13,4 +13,6 @@ export enum moduleTypes {
   Districts = "districts",
   AuthenticationSession = "authentication_session",
   Services = "services",
+  Declaimers = "declaimers",
+  Priorities = "priorities",
 }

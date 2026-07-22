@@ -15,7 +15,7 @@ const countriesApiData: IAPI[] = [
     activity_name: activityName.createCountry,
     activity_code: activityCode.createCountry,
     activity_method: apiMethods.POST,
-    url: "/api/v1/masters/countries/store",
+    url: "/api/v1/masters/countries",
     status: true,
     form_params: [],
     search_params: [],

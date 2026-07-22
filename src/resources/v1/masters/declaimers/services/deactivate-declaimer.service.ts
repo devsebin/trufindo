@@ -7,12 +7,12 @@ import { SingleResponse } from "@/utils/responses/success.response";
 import mongoose from "mongoose";
 import findDeclaimerHelperService from "../helpers/validators/find-declaimer.helper.service";
 import validateDeclaimerStateHelperService from "../helpers/validators/validate-declaimer-state.helper.service";
-import activateDeclaimerHelperService from "../helpers/operations/activate-declaimer.helper.service";
+import deactivateDeclaimerHelperService from "../helpers/operations/deactivate-declaimer.helper.service";
 import { returnDeclaimerSuccess } from "../declaimer.helper";
 import { declaimerResponse } from "../declaimer.response";
 import { declaimerErrorsMessages } from "../declaimer.messages";
 
-class enableDeclaimerService {
+class disableDeclaimerService {
   public async execute(
     id: mongoose.Types.ObjectId,
     userId: mongoose.Types.ObjectId,
@@ -32,12 +32,12 @@ class enableDeclaimerService {
       );
       const declaimer = declaimers[0];
 
-      await validateDeclaimerStateHelperService.isAlreadyActive(
+      await validateDeclaimerStateHelperService.isAlreadyInactive(
         declaimer,
         declaimerErrorsMessages,
       );
 
-      await activateDeclaimerHelperService.execute(
+      await deactivateDeclaimerHelperService.execute(
         declaimer,
         session,
         userId,
@@ -47,7 +47,7 @@ class enableDeclaimerService {
 
       await session.commitTransaction();
 
-      return returnDeclaimerSuccess("declaimer_activate", declaimerResponse([declaimer]), dbTransactions);
+      return returnDeclaimerSuccess("declaimer_deactivate", declaimerResponse([declaimer]), dbTransactions);
     } catch (error) {
       await session.abortTransaction();
       const err = error as Error & { data?: any };
@@ -59,4 +59,4 @@ class enableDeclaimerService {
   }
 }
 
-export default new enableDeclaimerService();
+export default new disableDeclaimerService();

@@ -149,6 +149,10 @@ export const authenticationErrors = {
     message: "Registration is not permitted for the requested role.",
     status: statusCodes.BadRequest,
   },
+  declaimer_required: {
+    message: "Declaimers are required for registration.",
+    status: statusCodes.BadRequest,
+  },
 };
 
 export const authenticationSuccess = {

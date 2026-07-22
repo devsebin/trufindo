@@ -11,10 +11,11 @@ import authenticationSessionsApiData from "../data-source/apis/authentication-se
 import createUserRegistrationApiData from "../data-source/apis/user-registration-api-data";
 import userApiData from "../data-source/apis/user-api-data";
 import servicesApiData from "../data-source/apis/service-api-data";
+import prioritiesApiData from "../data-source/apis/priority-api-data";
 
 export const seedActivity = async () => {
   await api.deleteMany({});
-  
+
   const allApis = [
     ...authenticationApiData,
     ...countriesApiData,
@@ -28,6 +29,7 @@ export const seedActivity = async () => {
     ...createUserRegistrationApiData,
     ...userApiData,
     ...servicesApiData,
+    ...prioritiesApiData,
   ];
 
   if (allApis.length > 0) {

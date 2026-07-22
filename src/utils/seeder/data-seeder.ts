@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { seedUser } from "./seeder-source/user-seeder";
 import { seedStatus } from "./seeder-source/status-seeder";
 import dotenv from "dotenv";
+import { seedPriority } from "./seeder-source/prioritise-seeder";
 dotenv.config();
 
 const MONGO_PATH = process.env.MONGO_PATH as string; // Replace with your DB URI
@@ -27,6 +28,7 @@ const seedDatabase = async () => {
 
     await seedUser();
     await seedStatus();
+    await seedPriority()
 
     console.log("Seeding complete!");
     process.exit();

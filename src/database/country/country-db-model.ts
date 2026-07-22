@@ -21,12 +21,6 @@ const countrySchema = new Schema<ICountry>(
     name: { type: String, required: true, unique: true },
     iso_code: { type: String, required: true, unique: true },
     iso_code_3: { type: String, required: true, unique: true },
-    code: {
-      type: String,
-      required: true,
-      trim: true,
-      lowercase: true,
-    },
     region_ids: [
       {
         type: mongoose.Schema.Types.ObjectId,

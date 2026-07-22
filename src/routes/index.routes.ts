@@ -4,6 +4,6 @@ import authenticationRoutes from "@/resources/v1/authentication/authentication.r
 
 const router = Router();
 router.use("/users", userRoutes);
-router.use("/auth", authenticationRoutes);
+router.use("/authentication", authenticationRoutes);
 
 export default router;

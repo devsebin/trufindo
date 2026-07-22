@@ -6,7 +6,6 @@ export interface ICountryDTO {
   name: string;
   iso_code: string;
   iso_code_3: string;
-  code: string;
   phone_code: string;
   currency: string;
   continent: string;
@@ -18,7 +17,6 @@ export function toCountryDTO(body: IInputICountryPayloadStrict): ICountryDTO {
     name: capitalize(body.name),
     iso_code: capitalize(body.iso_code),
     iso_code_3: capitalize(body.iso_code_3),
-    code: body.code,
     phone_code: body.phone_code,
     currency: body.currency,
     continent: body.continent,

@@ -13,7 +13,7 @@ import { operationTypes } from "@/utils/definitions/constants/operation-types";
 import { rethrowIfKnown } from "@/utils/responses/error.response";
 
 class updateCountryHelperService {
-  constructor() {}
+  constructor() { }
 
   public async execute(
     id: mongoose.Types.ObjectId,
@@ -40,7 +40,6 @@ class updateCountryHelperService {
       existing.name = payload.name;
       existing.iso_code = payload.iso_code;
       existing.iso_code_3 = payload.iso_code_3;
-      if (payload.code) existing.code = payload.code;
       existing.phone_code = payload.phone_code;
       existing.currency = payload.currency;
       existing.continent = payload.continent;

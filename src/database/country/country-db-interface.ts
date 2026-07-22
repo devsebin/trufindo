@@ -9,7 +9,6 @@ interface ICountry extends CommonServiceFieldsInterface {
   name: string; // Name of the country
   iso_code: string; // ISO 3166-1 Alpha-2 code
   iso_code_3: string; // ISO 3166-1 Alpha-3 code
-  code: string; // Numeric country code
   region_ids?: Types.ObjectId[];
   phone_code: string;
   currency: string;
@@ -21,6 +20,6 @@ interface ICountry extends CommonServiceFieldsInterface {
   providers?: [ICountryProviders];
 }
 
-export interface ICountryDocument extends ICountry, Document {}
+export interface ICountryDocument extends ICountry, Document { }
 
 export default ICountry;

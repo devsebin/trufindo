@@ -5,8 +5,8 @@ import express from "express";
 import {
   createDeclaimerValidation,
   updateDeclaimerValidation,
-} from "./declaimer.validation";
-import { Activate, List, Show, Store, Update } from "./declaimer.controller";
+} from "./declaimer.validator";
+import declaimerController from "./declaimer.controller";
 import { paramsValidator } from "@/middlewares/request-url-object-id.validation.middleware";
 
 const router = express.Router();
@@ -16,18 +16,20 @@ router.post(
   authenticate,
   validationMiddleware(createDeclaimerValidation),
   authorization,
-  Store,
+  declaimerController.Store,
 );
 
-router.get("/", authenticate, authorization, List);
-router.get("/:id", paramsValidator, authenticate, authorization, Show);
+router.get("/", authenticate, authorization, declaimerController.Index);
+
+router.get("/:id", paramsValidator, authenticate, authorization, declaimerController.Show);
+
 router.put(
   "/:id",
   validationMiddleware(updateDeclaimerValidation),
   paramsValidator,
   authenticate,
   authorization,
-  Update,
+  declaimerController.Update,
 );
 
 router.patch(
@@ -35,7 +37,15 @@ router.patch(
   paramsValidator,
   authenticate,
   authorization,
-  Activate,
+  declaimerController.activate,
+);
+
+router.patch(
+  "/:id/deactivate",
+  paramsValidator,
+  authenticate,
+  authorization,
+  declaimerController.deactivate,
 );
 
 export default router;

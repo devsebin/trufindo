@@ -8,7 +8,7 @@ import {
 import { ErrorTypes, ResponseBuilder } from "@/utils/helpers/response-builder";
 
 // User roles
-type Role = "admin" | "user" | "employee";
+type Role = "super_admin" | "admin" | "user" | "employee";
 
 // Assuming you're attaching the user's role in `req.user.role`
 export const authorization = async (
@@ -60,6 +60,7 @@ export const authorization = async (
     }
 
     const roleAccessMap = {
+      super_admin: apiData.admin_access,
       admin: apiData.admin_access,
       user: apiData.user_access,
       employee: apiData.employee_access,

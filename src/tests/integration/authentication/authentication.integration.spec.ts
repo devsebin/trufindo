@@ -123,7 +123,7 @@ describe("Authentication (Integration)", () => {
 
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
-      
+
       const resultData = res.body.data[0].result;
       expect(resultData.id).toBeDefined();
 
@@ -215,7 +215,7 @@ describe("Authentication (Integration)", () => {
       }
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
-      
+
       const resultData = res.body.data[0].result;
       expect(resultData.accessToken).toBeDefined();
       expect(resultData.refreshToken).toBeDefined();
@@ -307,7 +307,7 @@ describe("Authentication (Integration)", () => {
 
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
-      
+
       const resultData = res.body.data[0].result;
       expect(resultData.accessToken).toBeDefined();
       expect(resultData.refreshToken).toBeDefined();

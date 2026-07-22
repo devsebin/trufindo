@@ -48,10 +48,10 @@ export const populateFields = [
     path: "status_id",
     select: "title",
   },
-  {
-    path: "provider",
-    select: "name is_active supportedCountries",
-  },
+  // {
+  //   path: "provider",  
+  //   select: "name is_active supportedCountries",
+  // },
   {
     path: "region_ids",
   },

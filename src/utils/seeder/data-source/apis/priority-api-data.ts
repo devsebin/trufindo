@@ -6,19 +6,19 @@ import { AccessType, IAPI } from "../../../../utils/interfaces/api.interface";
 import {
     activityCode,
     activityName,
-} from "../../activities/declaimer-activities";
+} from "../../activities/priority-activities";
 import { searchTypes } from "../../../../utils/definitions/constants/search-types";
 import { declaimerKeys } from "../../../../resources/v1/masters/declaimers/declaimer.validator";
 
-const countriesApiData: IAPI[] = [
+const priorityApiData: IAPI[] = [
     // create status
     {
         activity_type: activityTypes.Create,
-        module: moduleTypes.Declaimers,
-        activity_name: activityName.createDeclaimer,
-        activity_code: activityCode.createDeclaimer,
+        module: moduleTypes.Priorities,
+        activity_name: activityName.createPriority,
+        activity_code: activityCode.createPriority,
         activity_method: apiMethods.POST,
-        url: "/api/v1/masters/declaimers",
+        url: "/api/v1/masters/priorities",
         status: true,
         form_params: [],
         search_params: [],
@@ -32,7 +32,7 @@ const countriesApiData: IAPI[] = [
         payload_params: [
             {
                 key: "key",
-                value: "enum (declaimerKeys)",
+                value: "enum (priorityKeys)",
                 type: datatypes.String,
                 required: true,
                 parent: false,
@@ -88,11 +88,11 @@ const countriesApiData: IAPI[] = [
     // list status
     {
         activity_type: activityTypes.List,
-        module: moduleTypes.Declaimers,
-        activity_name: activityName.listDeclaimer,
-        activity_code: activityCode.listDeclaimer,
+        module: moduleTypes.Priorities,
+        activity_name: activityName.listPriority,
+        activity_code: activityCode.listPriority,
         activity_method: apiMethods.GET,
-        url: "/api/v1/masters/declaimers",
+        url: "/api/v1/masters/priorities",
         status: true,
         form_params: [],
         search_params: [
@@ -180,11 +180,11 @@ const countriesApiData: IAPI[] = [
     // update status
     {
         activity_type: activityTypes.Update,
-        module: moduleTypes.Declaimers,
-        activity_name: activityName.updateDeclaimer,
-        activity_code: activityCode.updateDeclaimer,
+        module: moduleTypes.Priorities,
+        activity_name: activityName.updatePriority,
+        activity_code: activityCode.updatePriority,
         activity_method: apiMethods.PUT,
-        url: "/api/v1/masters/declaimers/:id",
+        url: "/api/v1/masters/priorities/:id",
         status: true,
         form_params: [],
         search_params: [],
@@ -230,11 +230,11 @@ const countriesApiData: IAPI[] = [
     // delete status
     {
         activity_type: activityTypes.Delete,
-        module: moduleTypes.Declaimers,
-        activity_name: activityName.deleteDeclaimer,
-        activity_code: activityCode.deleteDeclaimer,
+        module: moduleTypes.Priorities,
+        activity_name: activityName.deletePriority,
+        activity_code: activityCode.deletePriority,
         activity_method: apiMethods.DELETE,
-        url: "/api/v1/masters/declaimers/:id",
+        url: "/api/v1/masters/priorities/:id",
         status: true,
         form_params: [],
         search_params: [],
@@ -254,11 +254,11 @@ const countriesApiData: IAPI[] = [
     // activate status
     {
         activity_type: activityTypes.Activate,
-        module: moduleTypes.Declaimers,
-        activity_name: activityName.activateDeclaimer,
-        activity_code: activityCode.activateDeclaimer,
+        module: moduleTypes.Priorities,
+        activity_name: activityName.activatePriority,
+        activity_code: activityCode.activatePriority,
         activity_method: apiMethods.PATCH,
-        url: "/api/v1/masters/declaimers/:id/activate",
+        url: "/api/v1/masters/priorities/:id/activate",
         status: true,
         form_params: [],
         search_params: [],
@@ -278,11 +278,11 @@ const countriesApiData: IAPI[] = [
     // deactivate status
     {
         activity_type: activityTypes.Deactivate,
-        module: moduleTypes.Declaimers,
-        activity_name: activityName.deactivateDeclaimer,
-        activity_code: activityCode.deactivateDeclaimer,
+        module: moduleTypes.Priorities,
+        activity_name: activityName.deactivatePriority,
+        activity_code: activityCode.deactivatePriority,
         activity_method: apiMethods.PATCH,
-        url: "/api/v1/masters/declaimers/:id/deactivate",
+        url: "/api/v1/masters/priorities/:id/deactivate",
         status: true,
         form_params: [],
         search_params: [],
@@ -302,11 +302,11 @@ const countriesApiData: IAPI[] = [
     // show status
     {
         activity_type: activityTypes.Show,
-        module: moduleTypes.Declaimers,
-        activity_name: activityName.showDeclaimer,
-        activity_code: activityCode.showDeclaimer,
+        module: moduleTypes.Priorities,
+        activity_name: activityName.showPriority,
+        activity_code: activityCode.showPriority,
         activity_method: apiMethods.GET,
-        url: "/api/v1/masters/declaimers/:id",
+        url: "/api/v1/masters/priorities/:id",
         status: true,
         form_params: [],
         search_params: [],
@@ -326,11 +326,11 @@ const countriesApiData: IAPI[] = [
     // import status
     {
         activity_type: activityTypes.Import,
-        module: moduleTypes.Declaimers,
-        activity_name: activityName.importDeclaimer,
-        activity_code: activityCode.importDeclaimer,
+        module: moduleTypes.Priorities,
+        activity_name: activityName.importPriority,
+        activity_code: activityCode.importPriority,
         activity_method: apiMethods.POST,
-        url: "/api/v1/masters/declaimers/import",
+        url: "/api/v1/masters/priorities/import",
         status: true,
         form_params: [],
         search_params: [],
@@ -350,11 +350,11 @@ const countriesApiData: IAPI[] = [
     // export status
     {
         activity_type: activityTypes.Export,
-        module: moduleTypes.Declaimers,
-        activity_name: activityName.exportDeclaimer,
-        activity_code: activityCode.exportDeclaimer,
+        module: moduleTypes.Priorities,
+        activity_name: activityName.exportPriority,
+        activity_code: activityCode.exportPriority,
         activity_method: apiMethods.GET,
-        url: "/api/v1/masters/declaimers/export",
+        url: "/api/v1/masters/priorities/export",
         status: true,
         form_params: [],
         search_params: [],
@@ -373,11 +373,11 @@ const countriesApiData: IAPI[] = [
     },
     {
         activity_type: activityTypes.Export,
-        module: moduleTypes.Declaimers,
-        activity_name: activityName.exportTemplateDeclaimer,
-        activity_code: activityCode.exportTemplateDeclaimer,
+        module: moduleTypes.Priorities,
+        activity_name: activityName.exportTemplatePriority,
+        activity_code: activityCode.exportTemplatePriority,
         activity_method: apiMethods.GET,
-        url: "/api/v1/masters/declaimers/export-template",
+        url: "/api/v1/masters/priorities/export-template",
         status: true,
         form_params: [],
         search_params: [],
@@ -397,11 +397,11 @@ const countriesApiData: IAPI[] = [
     // log status
     {
         activity_type: activityTypes.Log,
-        module: moduleTypes.Declaimers,
-        activity_name: activityName.logDeclaimer,
-        activity_code: activityCode.logDeclaimer,
+        module: moduleTypes.Priorities,
+        activity_name: activityName.logPriority,
+        activity_code: activityCode.logPriority,
         activity_method: apiMethods.GET,
-        url: "/api/v1/masters/declaimers/log",
+        url: "/api/v1/masters/priorities/log",
         status: true,
         form_params: [],
         search_params: [
@@ -481,4 +481,4 @@ const countriesApiData: IAPI[] = [
     },
 ];
 
-export default countriesApiData;
+export default priorityApiData;

@@ -33,6 +33,14 @@ export const declaimerErrorsMessages = {
     message: "Failed to update the declaimer.",
     status: statusCodes.InternalServerError,
   },
+  declaimer_already_active: {
+    message: "Declaimer is already active.",
+    status: statusCodes.BadRequest,
+  },
+  declaimer_already_inactive: {
+    message: "Declaimer is already inactive.",
+    status: statusCodes.BadRequest,
+  },
 };
 
 export const declaimerSuccessMessages = {
@@ -50,6 +58,14 @@ export const declaimerSuccessMessages = {
   },
   declaimer_fetched: {
     message: "Declaimer fetched successfully.",
+    status: statusCodes.OK,
+  },
+  declaimer_activate: {
+    message: "Declaimer activated successfully.",
+    status: statusCodes.OK,
+  },
+  declaimer_deactivate: {
+    message: "Declaimer deactivated successfully.",
     status: statusCodes.OK,
   },
 };
