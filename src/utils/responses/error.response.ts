@@ -41,7 +41,6 @@ export function rethrowIfKnown(
   contextMessage: string,
   errorMap: Record<string, { message: string; status: number }>,
 ): never {
-  console.log(err.message);
   if (err instanceof Error && err.message in errorMap) {
     throw err;
   }

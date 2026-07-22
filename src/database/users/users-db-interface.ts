@@ -1,4 +1,4 @@
-import { Document, Types } from "mongoose";
+import mongoose, { Document, Types } from "mongoose";
 
 export interface IUserDeclaimerInput {
   declaimer_id: Types.ObjectId; // allow string from API, cast later
@@ -55,4 +55,38 @@ export interface IUser extends Document {
   user_basic?: IUserBasicFormDto;
   verification_attempts?: number;
   status_id: Types.ObjectId;
+}
+
+export interface IInputUser {
+  first_name?: string | null;
+  middle_name?: string | null;
+  last_name?: string | null;
+  role: string;
+  email?: string | null;
+  password?: string | null;
+  emailVerified?: boolean;
+  emailVerifiedAt?: Date;
+  priority: IUserPriority;
+  phone?: string | null;
+  phoneVerified: boolean;
+  phoneVerifiedAt?: Date;
+  icon?: mongoose.Types.ObjectId;
+  user_location?: string;
+  user_country?: string;
+  user_region?: string;
+  user_city?: string;
+  referral_code?: string;
+  is_active: boolean;
+  is_deleted: boolean;
+  last_login?: Date;
+  login_attempts?: number;
+  last_login_attempt?: Date;
+  is_account_locked?: boolean;
+  account_locked_until?: Date;
+  google_token?: string;
+  google_id?: string;
+  declaimer?: IUserDeclaimerInput[];
+  verification_attempts?: number;
+  user_basic?: IUserBasicFormDto;
+  status: boolean;
 }

@@ -37,7 +37,7 @@ async function getDefaultStatusId() {
 }
 
 export function defaultStatusPlugin(schema: Schema) {
-  schema.pre("save", async function (next) {
+  schema.pre("validate", async function (next) {
     if (!this.status_id) {
       this.status_id = await getDefaultStatusId();
     }

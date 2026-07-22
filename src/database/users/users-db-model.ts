@@ -7,6 +7,7 @@ import {
   IUserDeclaimerInput,
 } from "./users-db-interface";
 import { defaultPriorityPlugin } from "../../utils/plugins/defaultPriority.plugin";
+import { defaultStatusPlugin } from "@/utils/plugins/defaultStatus.plugin";
 
 // Define the IconUrl schema
 const IconUrlSchema: Schema = new Schema(
@@ -212,6 +213,7 @@ UserSchema.methods.toJSON = function () {
 };
 
 UserSchema.plugin(defaultPriorityPlugin);
+UserSchema.plugin(defaultStatusPlugin);
 
 UserSchema.pre(/^find/, function (next) {
   this.where({ is_active: true, is_deleted: false });

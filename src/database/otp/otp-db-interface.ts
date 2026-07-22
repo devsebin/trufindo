@@ -19,4 +19,16 @@ export interface IOtp {
   declaimers: IDeclaimerInput[];
 }
 
-export interface IOtpDocument extends IOtp, Document {}
+export interface IOtpInput {
+  phoneNumber: string;
+  country_code: string;
+  device_id: string;
+  otp_type: string;
+  user_type: string;
+  otp_hash: string;
+  expires_at: Date;
+  last_seen_at: Date;
+  declaimers: IDeclaimerInput[];
+}
+
+export interface IOtpDocument extends IOtp, Document { }
